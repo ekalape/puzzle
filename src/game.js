@@ -1,4 +1,5 @@
 import pBtn from './pBtn';
+import createModal from './modals';
 
 export default class Game {
   emptyBtn;
@@ -6,6 +7,8 @@ export default class Game {
   clicksCounter;
   btnsArrangement;
   winCombo;
+  timer;
+  isComplete;
 
   constructor(wrapper, pgSize) {
     this.wrapper = wrapper;
@@ -13,14 +16,17 @@ export default class Game {
     this.setSizes();
     this.btnsArrangement = [];
     this.winCombo = [];
-
-    this.clickCounter = 0;
+    this.isComplete = false;
+    this.clicksCounter = 0;
     this.emptyBtn = '';
     this.animAvailable = true;
+    this.timer = new Date();
   }
 
   createPg() {
     let num = 1;
+    this.isComplete = false;
+    this.wrapper.innerHTML = '';
     let emptyCol = this.generateRandomEmpty();
     let emptyRow = this.generateRandomEmpty();
     this.wrapper.innerHTML = '';
@@ -70,7 +76,15 @@ export default class Game {
 
     let hasEmptySibling = this.checkForEmptySibling(e.target);
     console.log(hasEmptySibling);
-    if (hasEmptySibling) this.move(e.target);
+    if (hasEmptySibling) {
+      this.animAvailable = false;
+      this.move(e.target);
+      setTimeout(() => {
+        this.clicksCounter++;
+        this.animAvailable = true;
+        this.checkForWin();
+      }, 200);
+    }
   }
 
   checkForEmptySibling(currentB) {
@@ -88,44 +102,38 @@ export default class Game {
   }
 
   move(currentBtn) {
-    // this.animAvailable = false;
-
     let curCol = +currentBtn.style.gridColumnStart;
     let curRow = +currentBtn.style.gridRowStart;
     let emptyCol = +this.emptyBtn.style.gridColumnStart;
     let emptyRow = +this.emptyBtn.style.gridRowStart;
 
     if (curCol === emptyCol && emptyRow - curRow === 1) {
-      console.log('row >> 1', 'down');
+      //  console.log('row >> 1', 'down');
 
       //down
       currentBtn.style.gridRowStart = emptyRow;
       this.emptyBtn.style.gridRowStart = curRow;
     } else if (curCol === emptyCol && emptyRow - curRow === -1) {
-      console.log('row >> -1', 'up');
+      //console.log('row >> -1', 'up');
       //up
       currentBtn.style.gridRowStart = emptyRow;
       this.emptyBtn.style.gridRowStart = curRow;
     } else if (curRow === emptyRow && emptyCol - curCol === 1) {
-      console.log('Col >> 1', 'right');
+      // console.log('Col >> 1', 'right');
       //right
       currentBtn.style.gridColumnStart = emptyCol;
       this.emptyBtn.style.gridColumnStart = curCol;
     } else if (curRow === emptyRow && emptyCol - curCol === -1) {
-      console.log('Col >> -1', 'left');
+      // console.log('Col >> -1', 'left');
       //left
       currentBtn.style.gridColumnStart = emptyCol;
       this.emptyBtn.style.gridColumnStart = curCol;
     } else return;
-
-    /*  setTimeout(() => {
-      this.animAvailable = true;
-      this.checkForWin();
-    }, 200); */
   }
 
   checkForWin() {
-    console.log('winCheck');
+    if (this.isComplete) return;
+    // console.log('winCheck');
     const realArr = [...this.wrapper.children]
       .filter((s) => !s.classList.contains('quad-empty'))
       .sort(
@@ -134,8 +142,23 @@ export default class Game {
           `${b.style.gridRowStart}${b.style.gridColumnStart}`
       )
       .map((x) => x.textContent);
-    if (this.winCombo.join('') === realArr.join('')) console.log('WIN');
-    else console.log('WRONG');
+    if (this.winCombo.join('') === realArr.join('')) {
+      console.log('WIN');
+      let t = Math.round((new Date() - this.timer) / 1000);
+      const winFrame = createModal({
+        win: true,
+        clicks: this.clicksCounter,
+        time: t,
+      });
+      winFrame.classList.add('active');
+      document.body.append(winFrame);
+      setTimeout(() => {
+        this.isComplete = true;
+      }, 500);
+    } else {
+      console.log('WRONG');
+      return;
+    }
   }
 
   drawBtn(b, isNotEmpty) {

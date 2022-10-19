@@ -2,11 +2,13 @@ import './style.scss';
 import pBtn from './pBtn.js';
 import { emptyBtn } from './pBtn.js';
 import Game from './game.js';
+import { whatToDoNextBtns } from './modals.js';
 
 let playGroundSize = 3;
 let playGroundWidth;
 let btnSize;
 let currentGame;
+let replay;
 
 /* playground */
 const wrapper = document.createElement('div');
@@ -50,13 +52,14 @@ modeContainer.addEventListener('click', (e) => {
     playGroundSize = 5;
   }
 
-  startGame(playGroundSize);
+  startGame();
 });
 
 /* --------- */
-startGame(playGroundSize);
+startGame();
 
-function startGame(playGroundSize) {
+export function startGame() {
+  console.log('starting game!');
   wrapper.dataset.size = `${playGroundSize}x${playGroundSize}`;
   wrapper.innerHTML = '';
   currentGame = new Game(wrapper, playGroundSize);
