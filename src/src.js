@@ -61,6 +61,8 @@ function startGame(playGroundSize) {
   wrapper.innerHTML = '';
   currentGame = new Game(wrapper, playGroundSize);
   currentGame.createPg();
+  //  currentGame.mixBtns();
+  currentGame.easyMixing();
 }
 wrapper.addEventListener('click', (e) => currentGame.action(e));
 setSizes();

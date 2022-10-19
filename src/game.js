@@ -42,6 +42,27 @@ export default class Game {
       }
     }
   }
+  mixBtns() {
+    for (let i = 0; i < this.pgSize * 50; i++) {
+      const availForMove = [...this.wrapper.children].filter(
+        (x) =>
+          !x.classList.contains('quad-empty') && this.checkForEmptySibling(x)
+      );
+      let btnForMove = Math.floor(Math.random() * availForMove.length);
+      this.move(availForMove[btnForMove]);
+    }
+  }
+  easyMixing() {
+    console.log('easyMixing');
+    for (let i = 0; i < 2; i++) {
+      const availForMove = [...this.wrapper.children].filter(
+        (x) =>
+          !x.classList.contains('quad-empty') && this.checkForEmptySibling(x)
+      );
+      let btnForMove = Math.floor(Math.random() * availForMove.length);
+      this.move(availForMove[btnForMove]);
+    }
+  }
 
   action(e) {
     if (!this.animAvailable) return;
@@ -67,7 +88,7 @@ export default class Game {
   }
 
   move(currentBtn) {
-    this.animAvailable = false;
+    // this.animAvailable = false;
 
     let curCol = +currentBtn.style.gridColumnStart;
     let curRow = +currentBtn.style.gridRowStart;
@@ -97,10 +118,10 @@ export default class Game {
       this.emptyBtn.style.gridColumnStart = curCol;
     } else return;
 
-    setTimeout(() => {
+    /*  setTimeout(() => {
       this.animAvailable = true;
       this.checkForWin();
-    }, 200);
+    }, 200); */
   }
 
   checkForWin() {
@@ -131,7 +152,7 @@ export default class Game {
     } else {
       btn.classList.add('quad-empty');
       btn.dataset.index = 0;
-      btn.textContent = 0;
+      btn.textContent = '';
       this.emptyBtn = btn;
     }
     return btn;
