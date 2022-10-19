@@ -1,95 +1,143 @@
 import pBtn from './pBtn';
-import { emptyBtn } from './pBtn';
+
 export default class Game {
-  pg = [];
-  pgWidth = 0;
-  btnSize = 0;
   emptyBtn;
-  emptyX;
-  emptyY;
-  moveDirection;
-  animAvaible = true;
+  animAvailable;
+  clicksCounter;
+  btnsArrangement;
+  winCombo;
+
   constructor(wrapper, pgSize) {
     this.wrapper = wrapper;
     this.pgSize = pgSize;
     this.setSizes();
+    this.btnsArrangement = [];
+    this.winCombo = [];
+
+    this.clickCounter = 0;
+    this.emptyBtn = '';
+    this.animAvailable = true;
   }
 
   createPg() {
     let num = 1;
-    for (let i = 1; i <= this.pgSize; i++) {
-      // this.pg[i] = [];
-      for (let f = 1; f <= this.pgSize; f++) {
-        if (i === this.pgSize - 1 && f === this.pgSize - 1) {
-          const b = new emptyBtn(this.btnSize, this.pgSize, [i, f]).draw();
-          b.style.gridArea = `${i} / ${f}`;
-          this.pg.push(b);
-          this.wrapper.append(b);
-          this.emptyBtn = b;
-          this.emptyX = i;
-          this.emptyY = f;
+    let emptyCol = this.generateRandomEmpty();
+    let emptyRow = this.generateRandomEmpty();
+    this.wrapper.innerHTML = '';
+    for (let row = 1; row <= this.pgSize; row++) {
+      for (let col = 1; col <= this.pgSize; col++) {
+        const b = new pBtn(num, col, row);
+        if (col === emptyCol && row === emptyRow) {
+          b.isEmpty = true;
+          // this.emptyBtn = b;
+          this.wrapper.append(this.drawBtn(b, false));
+          this.btnsArrangement.push({ index: 0, content: b });
         } else {
-          const b = new pBtn(this.btnSize, this.pgSize, [i, f], num).draw();
-          b.style.gridArea = `${i} / ${f}`;
-          this.pg.push(b);
-          this.wrapper.append(b);
+          b.isEmpty = false;
+          this.wrapper.append(this.drawBtn(b, true));
+          this.btnsArrangement.push({ index: num, content: b });
+          this.winCombo.push(num);
           num++;
         }
       }
     }
-    this.wrapper.addEventListener('click', this.action.bind(this));
   }
-  setbtnSize() {
-    this.setSizes();
-    return this.btnSize;
-  }
+
   action(e) {
-    if (!this.animAvaible) return;
-    let curX = +e.target.style.gridColumnStart;
-    let curY = +e.target.style.gridRowStart;
-    // console.log(curX, curY);
-    if (this.isEmpty(curX, curY)) return;
-    let trans;
-    if (this.emptyX - curX === 1 && this.emptyY === curY) {
-      console.log(1, 'x');
-      this.moveDirection = 'right';
-      trans = ['X', this.btnSize];
-    } else if (this.emptyX - curX === -1 && this.emptyY === curY) {
-      console.log(-1, 'x');
-      this.moveDirection = 'left';
-      trans = ['X', -this.btnSize];
-    } else if (this.emptyX === curX && this.emptyY - curY === 1) {
-      console.log(1, 'y');
-      this.moveDirection = 'down';
-      trans = ['Y', this.btnSize];
-    } else if (this.emptyX === curX && this.emptyY - curY === -1) {
-      console.log(-1, 'y');
-      this.moveDirection = 'upper';
-      trans = ['Y', -this.btnSize];
+    if (!this.animAvailable) return;
+    if (e.target.dataset.index === '0') return;
+
+    let hasEmptySibling = this.checkForEmptySibling(e.target);
+    console.log(hasEmptySibling);
+    if (hasEmptySibling) this.move(e.target);
+  }
+
+  checkForEmptySibling(currentB) {
+    // console.log('curB ', currentB);
+    return (
+      (currentB.style.gridColumnStart === this.emptyBtn.style.gridColumnStart &&
+        Math.abs(
+          +currentB.style.gridRowStart - +this.emptyBtn.style.gridRowStart
+        ) === 1) ||
+      (currentB.style.gridRowStart === this.emptyBtn.style.gridRowStart &&
+        Math.abs(
+          +currentB.style.gridColumnStart - +this.emptyBtn.style.gridColumnStart
+        ) === 1)
+    );
+  }
+
+  move(currentBtn) {
+    this.animAvailable = false;
+
+    let curCol = +currentBtn.style.gridColumnStart;
+    let curRow = +currentBtn.style.gridRowStart;
+    let emptyCol = +this.emptyBtn.style.gridColumnStart;
+    let emptyRow = +this.emptyBtn.style.gridRowStart;
+
+    if (curCol === emptyCol && emptyRow - curRow === 1) {
+      console.log('row >> 1', 'down');
+
+      //down
+      currentBtn.style.gridRowStart = emptyRow;
+      this.emptyBtn.style.gridRowStart = curRow;
+    } else if (curCol === emptyCol && emptyRow - curRow === -1) {
+      console.log('row >> -1', 'up');
+      //up
+      currentBtn.style.gridRowStart = emptyRow;
+      this.emptyBtn.style.gridRowStart = curRow;
+    } else if (curRow === emptyRow && emptyCol - curCol === 1) {
+      console.log('Col >> 1', 'right');
+      //right
+      currentBtn.style.gridColumnStart = emptyCol;
+      this.emptyBtn.style.gridColumnStart = curCol;
+    } else if (curRow === emptyRow && emptyCol - curCol === -1) {
+      console.log('Col >> -1', 'left');
+      //left
+      currentBtn.style.gridColumnStart = emptyCol;
+      this.emptyBtn.style.gridColumnStart = curCol;
     } else return;
 
-    this.move(trans, e.target, curX, curY);
-  }
-  move(trans, btn, curX, curY) {
-    this.animAvaible = false;
-    btn.style.transform = `translate${trans[0]}(${trans[1]}px)`;
-
     setTimeout(() => {
-      this.emptyBtn.style.gridColumnStart = curX;
-      this.emptyBtn.style.gridRowStart = curY;
-      btn.style.gridColumnStart = this.emptyX;
-      btn.style.gridRowStart = this.emptyY;
-      [this.emptyX, this.emptyY] = [curX, curY];
-      btn.style.transform = `none`;
-      console.log(trans);
-      this.animAvaible = true;
-    }, 300);
-
-    console.log(this.emptyBtn);
+      this.animAvailable = true;
+      this.checkForWin();
+    }, 200);
   }
 
-  isEmpty(curX, curY) {
-    return curX === this.emptyX && curY === this.emptyY;
+  checkForWin() {
+    console.log('winCheck');
+    const realArr = [...this.wrapper.children]
+      .filter((s) => !s.classList.contains('quad-empty'))
+      .sort(
+        (a, b) =>
+          `${a.style.gridRowStart}${a.style.gridColumnStart}` -
+          `${b.style.gridRowStart}${b.style.gridColumnStart}`
+      )
+      .map((x) => x.textContent);
+    if (this.winCombo.join('') === realArr.join('')) console.log('WIN');
+    else console.log('WRONG');
+  }
+
+  drawBtn(b, isNotEmpty) {
+    const btn = document.createElement('div');
+    btn.className = 'q-btn';
+
+    btn.style.gridRowStart = b.startRow;
+    btn.style.gridColumnStart = b.startCol;
+
+    if (isNotEmpty) {
+      btn.classList.add('quad');
+      btn.textContent = b.num;
+      btn.dataset.index = b.num;
+    } else {
+      btn.classList.add('quad-empty');
+      btn.dataset.index = 0;
+      btn.textContent = 0;
+      this.emptyBtn = btn;
+    }
+    return btn;
+  }
+  generateRandomEmpty() {
+    return Math.floor(Math.random() * this.pgSize) + 1;
   }
 
   setSizes() {
@@ -99,8 +147,6 @@ export default class Game {
       this.pgWidth = 260;
     } else if (window.matchMedia('(max-width: 700px)').matches) {
       this.pgWidth = 400;
-      /*     playGroundSize = 4;
-      wrapper.dataset.size = '4x4'; */
     } else if (window.matchMedia('(max-width: 1200px)').matches) {
       this.pgWidth = 500;
     } else {

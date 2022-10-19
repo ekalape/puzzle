@@ -3,10 +3,10 @@ import pBtn from './pBtn.js';
 import { emptyBtn } from './pBtn.js';
 import Game from './game.js';
 
-let playGroundSize = 4;
+let playGroundSize = 3;
 let playGroundWidth;
 let btnSize;
-let gameIsStarted = false;
+let currentGame;
 
 /* playground */
 const wrapper = document.createElement('div');
@@ -19,7 +19,7 @@ const mixBtn = document.createElement('button');
 mixBtn.classList.add('controlBtns', 'quad', 'mix');
 mixBtn.textContent = 'Mix and restart';
 document.body.append(mixBtn);
-//mixBtn.addEventListener('click', mix);
+mixBtn.addEventListener('click', () => startGame(playGroundSize));
 
 /* choose mode */
 const modeContainer = document.createElement('div');
@@ -54,15 +54,15 @@ modeContainer.addEventListener('click', (e) => {
 });
 
 /* --------- */
-
-function startGame(playGroundSize) {
-  wrapper.innerHTML = '';
-  wrapper.dataset.size = `${playGroundSize}x${playGroundSize}`;
-  const g = new Game(wrapper, playGroundSize);
-  g.createPg();
-}
 startGame(playGroundSize);
 
+function startGame(playGroundSize) {
+  wrapper.dataset.size = `${playGroundSize}x${playGroundSize}`;
+  wrapper.innerHTML = '';
+  currentGame = new Game(wrapper, playGroundSize);
+  currentGame.createPg();
+}
+wrapper.addEventListener('click', (e) => currentGame.action(e));
 setSizes();
 window.addEventListener('resize', setSizes);
 
@@ -73,8 +73,6 @@ function setSizes() {
     playGroundWidth = 260;
   } else if (window.matchMedia('(max-width: 700px)').matches) {
     playGroundWidth = 400;
-    /*     playGroundSize = 4;
-    wrapper.dataset.size = '4x4'; */
   } else if (window.matchMedia('(max-width: 1200px)').matches) {
     playGroundWidth = 500;
   } else {
