@@ -4,35 +4,92 @@ export default class Game {
   pg = [];
   pgWidth = 0;
   btnSize = 0;
+  emptyBtn;
+  emptyX;
+  emptyY;
+  moveDirection;
+  animAvaible = true;
   constructor(wrapper, pgSize) {
     this.wrapper = wrapper;
-
     this.pgSize = pgSize;
     this.setSizes();
   }
 
   createPg() {
     let num = 1;
-    for (let i = 0; i < this.pgSize; i++) {
-      this.pg[i] = [];
-      for (let f = 0; f < this.pgSize; f++) {
+    for (let i = 1; i <= this.pgSize; i++) {
+      // this.pg[i] = [];
+      for (let f = 1; f <= this.pgSize; f++) {
         if (i === this.pgSize - 1 && f === this.pgSize - 1) {
-          this.pg[i].push(new emptyBtn(this.btnSize, this.pgSize));
+          const b = new emptyBtn(this.btnSize, this.pgSize, [i, f]).draw();
+          b.style.gridArea = `${i} / ${f}`;
+          this.pg.push(b);
+          this.wrapper.append(b);
+          this.emptyBtn = b;
+          this.emptyX = i;
+          this.emptyY = f;
         } else {
-          this.pg[i].push(new pBtn(this.btnSize, this.pgSize, num));
+          const b = new pBtn(this.btnSize, this.pgSize, [i, f], num).draw();
+          b.style.gridArea = `${i} / ${f}`;
+          this.pg.push(b);
+          this.wrapper.append(b);
+          num++;
         }
-        num++;
       }
     }
-    this.drawPg();
-    this.wrapper.addEventListener('click', this.move);
+    this.wrapper.addEventListener('click', this.action.bind(this));
   }
-  drawPg() {
-    this.pg.forEach((x) => x.forEach((s) => this.wrapper.append(s.draw())));
+  setbtnSize() {
+    this.setSizes();
+    return this.btnSize;
+  }
+  action(e) {
+    if (!this.animAvaible) return;
+    let curX = +e.target.style.gridColumnStart;
+    let curY = +e.target.style.gridRowStart;
+    // console.log(curX, curY);
+    if (this.isEmpty(curX, curY)) return;
+    let trans;
+    if (this.emptyX - curX === 1 && this.emptyY === curY) {
+      console.log(1, 'x');
+      this.moveDirection = 'right';
+      trans = ['X', this.btnSize];
+    } else if (this.emptyX - curX === -1 && this.emptyY === curY) {
+      console.log(-1, 'x');
+      this.moveDirection = 'left';
+      trans = ['X', -this.btnSize];
+    } else if (this.emptyX === curX && this.emptyY - curY === 1) {
+      console.log(1, 'y');
+      this.moveDirection = 'down';
+      trans = ['Y', this.btnSize];
+    } else if (this.emptyX === curX && this.emptyY - curY === -1) {
+      console.log(-1, 'y');
+      this.moveDirection = 'upper';
+      trans = ['Y', -this.btnSize];
+    } else return;
+
+    this.move(trans, e.target, curX, curY);
+  }
+  move(trans, btn, curX, curY) {
+    this.animAvaible = false;
+    btn.style.transform = `translate${trans[0]}(${trans[1]}px)`;
+
+    setTimeout(() => {
+      this.emptyBtn.style.gridColumnStart = curX;
+      this.emptyBtn.style.gridRowStart = curY;
+      btn.style.gridColumnStart = this.emptyX;
+      btn.style.gridRowStart = this.emptyY;
+      [this.emptyX, this.emptyY] = [curX, curY];
+      btn.style.transform = `none`;
+      console.log(trans);
+      this.animAvaible = true;
+    }, 300);
+
+    console.log(this.emptyBtn);
   }
 
-  move(e) {
-    console.log(e.target);
+  isEmpty(curX, curY) {
+    return curX === this.emptyX && curY === this.emptyY;
   }
 
   setSizes() {

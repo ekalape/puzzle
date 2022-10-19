@@ -3,14 +3,57 @@ import pBtn from './pBtn.js';
 import { emptyBtn } from './pBtn.js';
 import Game from './game.js';
 
+let playGroundSize = 4;
+let playGroundWidth;
+let btnSize;
+let gameIsStarted = false;
+
+/* playground */
 const wrapper = document.createElement('div');
 wrapper.className = 'wrapper';
 wrapper.dataset.size = '3x3';
 document.body.append(wrapper);
 
-let playGroundSize = 5;
-let playGroundWidth;
-let btnSize;
+/* mix btn */
+const mixBtn = document.createElement('button');
+mixBtn.classList.add('controlBtns', 'quad', 'mix');
+mixBtn.textContent = 'Mix and restart';
+document.body.append(mixBtn);
+//mixBtn.addEventListener('click', mix);
+
+/* choose mode */
+const modeContainer = document.createElement('div');
+modeContainer.className = 'mode-container';
+
+const threeMode = document.createElement('button');
+threeMode.classList.add('controlBtns', 'quad', 'three', 'choose-mode');
+threeMode.textContent = '3 x 3';
+const fourMode = document.createElement('button');
+fourMode.classList.add('controlBtns', 'quad', 'four', 'choose-mode');
+fourMode.textContent = '4 x 4';
+const fiveMode = document.createElement('button');
+fiveMode.classList.add('controlBtns', 'quad', 'five', 'choose-mode');
+fiveMode.textContent = '5 x 5';
+
+modeContainer.append(threeMode, fourMode, fiveMode);
+document.body.append(modeContainer);
+
+modeContainer.addEventListener('click', (e) => {
+  const btn = e.target;
+  if (btn.classList.contains('three')) {
+    playGroundSize = 3;
+  }
+  if (btn.classList.contains('four')) {
+    playGroundSize = 4;
+  }
+  if (btn.classList.contains('five')) {
+    playGroundSize = 5;
+  }
+
+  startGame(playGroundSize);
+});
+
+/* --------- */
 
 function startGame(playGroundSize) {
   wrapper.innerHTML = '';
