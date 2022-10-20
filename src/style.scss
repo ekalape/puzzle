@@ -4,6 +4,7 @@
   box-sizing: border-box;
 }
 $c_mid: rgb(124, 124, 241);
+//$c_mid: #7c7cf1;
 $c_dark: rgb(60, 60, 165);
 $c_light: rgb(158, 175, 250);
 $c_light_transparent: rgba(158, 175, 250, 0.4);
@@ -33,6 +34,71 @@ body {
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  position: relative;
+}
+
+header {
+  width: 100%;
+  height: 100px;
+  border-bottom: 5px solid $c_mid;
+  outline: 5px solid $c_dark;
+  background-color: rgba(255, 255, 255);
+  display: flex;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 8;
+  transition: 0.6s;
+
+  @media (max-width: 500px) {
+    height: 80px;
+  }
+}
+
+.header-container {
+  width: 100%;
+  height: 88%;
+  margin: 0.5% 18%;
+
+  position: relative;
+  bottom: 0;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 20%;
+  align-items: center;
+
+  @media (max-width: 500px) {
+    height: 90%;
+    margin: 1% 23%;
+  }
+}
+.datatime,
+.clicks-counter {
+  cursor: default;
+}
+.header-text {
+  font-size: 2rem;
+  color: $c_dark;
+  text-transform: uppercase;
+  @media (max-width: 1000px) {
+    font-size: 3rem;
+  }
+  @media (max-width: 500px) {
+    font-size: 3.5rem;
+  }
+}
+.modeContainer__title {
+  font-size: 20px;
+  margin-top: 20px;
+}
+
+main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin-top: 120px;
 }
 
 .wrapper {
@@ -105,6 +171,7 @@ body {
   color: white;
   text-align: center;
   font-size: 1.2rem;
+  text-transform: uppercase;
   @media (max-width: 1000px) {
     font-size: 1.6rem;
   }
@@ -125,15 +192,44 @@ body {
   }
 }
 .mix {
-  width: 160px;
+  width: 250px;
   height: 40px;
   margin-top: 40px;
   margin-bottom: 10px;
 }
+.mode-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.moreBtns-container {
+  margin-top: 20px;
+  gap: 10%;
+  @media (max-width: 500px) {
+    flex-direction: column;
+  }
+}
+.save-game,
+.show-last {
+  width: 100%;
+  height: 50px;
+  padding: 5px 10px;
+  font-size: 18px;
+  @media (max-width: 700px) {
+    font-size: 16px;
+  }
+  @media (max-width: 500px) {
+    width: 80%;
+    margin-bottom: 20px;
+  }
+}
+
 .choose-mode {
   width: 60px;
   height: 40px;
   margin: 10px;
+  text-transform: none;
 }
 
 .bg {

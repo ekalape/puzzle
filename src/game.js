@@ -1,5 +1,6 @@
 import pBtn from './pBtn';
 import createModal from './modals';
+import { stopTimer, updateClicks } from './src.js';
 
 export default class Game {
   emptyBtn;
@@ -78,9 +79,11 @@ export default class Game {
     console.log(hasEmptySibling);
     if (hasEmptySibling) {
       this.animAvailable = false;
+
       this.move(e.target);
+
+      updateClicks(++this.clicksCounter);
       setTimeout(() => {
-        this.clicksCounter++;
         this.animAvailable = true;
         this.checkForWin();
       }, 200);
@@ -154,6 +157,7 @@ export default class Game {
       document.body.append(winFrame);
       setTimeout(() => {
         this.isComplete = true;
+        stopTimer();
       }, 500);
     } else {
       console.log('WRONG');
