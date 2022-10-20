@@ -1,6 +1,6 @@
 import pBtn from './pBtn';
 import createModal from './modals';
-import { stopTimer, updateClicks } from './src.js';
+import { updateClicks, updateTimer, stopTimer } from './src.js';
 
 export default class Game {
   emptyBtn;
@@ -8,20 +8,18 @@ export default class Game {
   clicksCounter;
   btnsArrangement;
   winCombo;
-  timer;
   isComplete;
 
-  constructor(wrapper, pgSize) {
+  constructor(wrapper, pgSize, clicks) {
     this.wrapper = wrapper;
     this.pgSize = pgSize;
     this.setSizes();
     this.btnsArrangement = [];
     this.winCombo = [];
     this.isComplete = false;
-    this.clicksCounter = 0;
+    this.clicksCounter = clicks || 0;
     this.emptyBtn = '';
     this.animAvailable = true;
-    this.timer = new Date();
   }
 
   createPg() {
@@ -36,19 +34,32 @@ export default class Game {
         const b = new pBtn(num, col, row);
         if (col === emptyCol && row === emptyRow) {
           b.isEmpty = true;
-          // this.emptyBtn = b;
           this.wrapper.append(this.drawBtn(b, false));
-          this.btnsArrangement.push({ index: 0, content: b });
+          b.num = 0;
+          this.btnsArrangement.push(b);
         } else {
           b.isEmpty = false;
           this.wrapper.append(this.drawBtn(b, true));
-          this.btnsArrangement.push({ index: num, content: b });
           this.winCombo.push(num);
+          this.btnsArrangement.push(b);
           num++;
         }
       }
     }
   }
+
+  arrangeExistedGame(dataBlock) {
+    console.log(dataBlock);
+    this.isComplete = false;
+    this.wrapper.innerHTML = '';
+    this.btnsArrangement = dataBlock;
+    dataBlock.forEach((x) => {
+      console.log(typeof x);
+      const btn = this.drawBtn(x, !x.isEmpty);
+      this.wrapper.append(btn);
+    });
+  }
+
   mixBtns() {
     for (let i = 0; i < this.pgSize * 50; i++) {
       const availForMove = [...this.wrapper.children].filter(
@@ -76,7 +87,7 @@ export default class Game {
     if (e.target.dataset.index === '0') return;
 
     let hasEmptySibling = this.checkForEmptySibling(e.target);
-    console.log(hasEmptySibling);
+
     if (hasEmptySibling) {
       this.animAvailable = false;
 
@@ -91,7 +102,6 @@ export default class Game {
   }
 
   checkForEmptySibling(currentB) {
-    // console.log('curB ', currentB);
     return (
       (currentB.style.gridColumnStart === this.emptyBtn.style.gridColumnStart &&
         Math.abs(
@@ -110,9 +120,19 @@ export default class Game {
     let emptyCol = +this.emptyBtn.style.gridColumnStart;
     let emptyRow = +this.emptyBtn.style.gridRowStart;
 
+    let iB = this.btnsArrangement.filter(
+      (x) => x.num === +currentBtn.textContent
+    )[0];
+    let iEmpty = this.btnsArrangement.filter((x) => x.num === 0)[0];
+    console.log(iB);
+    console.log(iEmpty);
+    iB.startCol = emptyCol;
+    iB.startRow = emptyRow;
+    iEmpty.startCol = curCol;
+    iEmpty.startRow = curRow;
+
     if (curCol === emptyCol && emptyRow - curRow === 1) {
       //  console.log('row >> 1', 'down');
-
       //down
       currentBtn.style.gridRowStart = emptyRow;
       this.emptyBtn.style.gridRowStart = curRow;
@@ -136,7 +156,7 @@ export default class Game {
 
   checkForWin() {
     if (this.isComplete) return;
-    // console.log('winCheck');
+
     const realArr = [...this.wrapper.children]
       .filter((s) => !s.classList.contains('quad-empty'))
       .sort(
@@ -146,12 +166,9 @@ export default class Game {
       )
       .map((x) => x.textContent);
     if (this.winCombo.join('') === realArr.join('')) {
-      console.log('WIN');
-      let t = Math.round((new Date() - this.timer) / 1000);
       const winFrame = createModal({
         win: true,
         clicks: this.clicksCounter,
-        time: t,
       });
       winFrame.classList.add('active');
       document.body.append(winFrame);
@@ -160,7 +177,6 @@ export default class Game {
         stopTimer();
       }, 500);
     } else {
-      console.log('WRONG');
       return;
     }
   }
@@ -184,6 +200,7 @@ export default class Game {
     }
     return btn;
   }
+
   generateRandomEmpty() {
     return Math.floor(Math.random() * this.pgSize) + 1;
   }
@@ -201,6 +218,5 @@ export default class Game {
       this.pgWidth = 600;
     }
     this.btnSize = Math.floor(this.pgWidth / this.pgSize);
-    console.log(this.btnSize);
   }
 }

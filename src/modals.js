@@ -1,4 +1,4 @@
-import { startGame } from './src';
+import { startBrandNewGame, getElapsedTime } from './src';
 
 export default function createModal(options) {
   const bg = document.createElement('div');
@@ -9,11 +9,11 @@ export default function createModal(options) {
   bg.addEventListener('click', closeModal);
   bg.append(mainFrame);
   if (options.win === true) {
-    const frame = winModal(options.clicks, options.time);
+    const frame = winModal(options.clicks, getElapsedTime());
     mainFrame.append(frame);
     frame.addEventListener('click', (e) => {
       if (e.target.textContent.includes('again')) {
-        startGame();
+        startBrandNewGame();
         setTimeout(() => {
           bg.classList.remove('active');
           bg.remove();

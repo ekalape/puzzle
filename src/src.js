@@ -9,7 +9,7 @@ let playGroundWidth;
 let btnSize;
 let currentGame;
 let intId;
-
+let elapsedTime;
 /* page structure */
 /* --- element creations --- */
 const header = document.createElement('header');
@@ -20,8 +20,10 @@ const datatime = document.createElement('span');
 const clickscounter = document.createElement('span');
 
 const wrapper = document.createElement('div');
-
+const startGameContainer = document.createElement('div');
 const mixBtn = document.createElement('button');
+const loadGameBtn = document.createElement('button');
+
 const modeContainer = document.createElement('div');
 const modeContainer__title = document.createElement('h4');
 
@@ -30,21 +32,30 @@ const fourMode = document.createElement('button');
 const fiveMode = document.createElement('button');
 
 const moreBtnsCont = document.createElement('div');
-const saveGame = document.createElement('button');
-const showLast = document.createElement('button');
+const saveGameBtn = document.createElement('button');
+const showLastBtn = document.createElement('button');
 
 /* --- element classlist --- */
 headerContainer.className = 'header-container';
+startGameContainer.classList.add('mode-container', 'moreBtns-container');
 mixBtn.classList.add('controlBtns', 'quad', 'mix');
+loadGameBtn.classList.add('controlBtns', 'quad', 'savedGame');
+
 modeContainer.className = 'mode-container';
 modeContainer__title.classList.add('header-text', 'modeContainer__title');
-threeMode.classList.add('controlBtns', 'quad', 'three', 'choose-mode');
+threeMode.classList.add(
+  'controlBtns',
+  'quad',
+  'three',
+  'choose-mode',
+  'active-mode'
+);
 fourMode.classList.add('controlBtns', 'quad', 'four', 'choose-mode');
 fiveMode.classList.add('controlBtns', 'quad', 'five', 'choose-mode');
 
 moreBtnsCont.classList.add('mode-container', 'moreBtns-container');
-saveGame.classList.add('quad', 'controlBtns', 'save-game');
-showLast.classList.add('quad', 'controlBtns', 'show-last');
+saveGameBtn.classList.add('quad', 'controlBtns', 'save-game');
+showLastBtn.classList.add('quad', 'controlBtns', 'show-last');
 
 datatime.classList.add('datatime', 'header-text');
 clickscounter.classList.add('clicks-counter', 'header-text');
@@ -52,10 +63,12 @@ clickscounter.classList.add('clicks-counter', 'header-text');
 wrapper.className = 'wrapper';
 
 /* --- element content --- */
-mixBtn.textContent = 'Mix and restart';
+mixBtn.textContent = 'Start new game';
 mixBtn.title = 'Mix buttons and restart';
+loadGameBtn.textContent = 'Load game';
+loadGameBtn.title = 'Load saved game';
 
-modeContainer__title.textContent = 'Choose game mode';
+modeContainer__title.textContent = '... or choose game mode';
 threeMode.textContent = '3 x 3';
 fourMode.textContent = '4 x 4';
 fiveMode.textContent = '5 x 5';
@@ -66,8 +79,8 @@ fiveMode.textContent = '5 x 5';
   '5x5 game field',
 ];
 
-showLast.textContent = 'show last results';
-saveGame.textContent = 'save current game';
+showLastBtn.textContent = 'show last results';
+saveGameBtn.textContent = 'save current game';
 
 datatime.textContent = '00:00:00';
 clickscounter.textContent = '---';
@@ -81,16 +94,18 @@ wrapper.dataset.size = '3x3';
 document.body.append(header, main);
 headerContainer.append(datatime, clickscounter);
 header.append(headerContainer);
-main.append(wrapper, mixBtn);
+startGameContainer.append(mixBtn, loadGameBtn);
+main.append(wrapper, startGameContainer);
 modeContainer.append(threeMode, fourMode, fiveMode);
 main.append(modeContainer__title);
 main.append(modeContainer);
-moreBtnsCont.append(saveGame, showLast);
+moreBtnsCont.append(saveGameBtn, showLastBtn);
 main.append(moreBtnsCont);
 
-mixBtn.addEventListener('click', () => startGame(playGroundSize));
+mixBtn.addEventListener('click', startBrandNewGame);
 
 modeContainer.addEventListener('click', (e) => {
+  [...modeContainer.children].forEach((x) => x.classList.remove('active-mode'));
   const btn = e.target;
   if (btn.classList.contains('three')) {
     playGroundSize = 3;
@@ -101,42 +116,78 @@ modeContainer.addEventListener('click', (e) => {
   if (btn.classList.contains('five')) {
     playGroundSize = 5;
   }
-  startGame();
+  btn.classList.add('active-mode');
+  startBrandNewGame();
 });
+saveGameBtn.addEventListener('click', saveGame);
+loadGameBtn.addEventListener('click', startSavedGame);
+
+showLastBtn.addEventListener('click', showLastResults);
 wrapper.addEventListener('click', (e) => currentGame.action(e));
 setSizes();
 /* --------------------------- */
 
-startGame();
+startBrandNewGame();
 
-export function startGame() {
-  stopTimer();
+export function startSavedGame() {
+  if (localStorage.getItem('pGameInProcess')) {
+    clearTimer();
+    stopTimer();
+    clickscounter.textContent = 0;
+    console.log('starting game!');
+
+    const savedGame = JSON.parse(localStorage.getItem('pGameInProcess'));
+    playGroundSize = savedGame.pgSize;
+    wrapper.dataset.size = `${playGroundSize}x${playGroundSize}`;
+    wrapper.innerHTML = '';
+    currentGame = new Game(wrapper, savedGame.pgSize, savedGame.clicks);
+    currentGame.arrangeExistedGame(savedGame.btnsArrangement);
+    clickscounter.textContent = savedGame.clicks;
+    datatime.textContent = savedGame.timer;
+    startTimer(savedGame.seconds);
+    console.log(currentGame);
+  }
+}
+export function startBrandNewGame() {
   clearTimer();
+  stopTimer();
   clickscounter.textContent = 0;
   console.log('starting game!');
   wrapper.dataset.size = `${playGroundSize}x${playGroundSize}`;
   wrapper.innerHTML = '';
   currentGame = new Game(wrapper, playGroundSize);
   currentGame.createPg();
-  //  currentGame.mixBtns();
   currentGame.easyMixing();
-
-  /*   wrapper.addEventListener('moved', (e) => {
-    console.log(e);
-    clickscounter.textContent = currentGame.clickscounter;
-  }); */
   startTimer();
+}
+
+export function saveResult(dataBlock) {
+  localStorage.setItem('pGameLastResults', dataBlock);
+}
+export function showLastResults() {}
+export function saveGame() {
+  //localStorage.removeItem('pGameInProcess');
+  console.log(currentGame);
+  const game = {
+    pgSize: currentGame.pgSize,
+    btnsArrangement: currentGame.btnsArrangement,
+    clicks: currentGame.clicksCounter,
+    timer: datatime.textContent,
+    seconds: getElapsedTime(),
+  };
+  localStorage.setItem('pGameInProcess', JSON.stringify(game));
 }
 
 export function updateClicks(text) {
   clickscounter.textContent = text;
 }
-/* datatimer */
-export function startTimer() {
-  let result = 0;
-  let t = 0;
 
-  if (!intId) {
+/* datatimer */
+export function startTimer(n) {
+  let result = 0;
+  let t = n || 0;
+
+  if (intId == null) {
     intId = setInterval(() => {
       t++;
       if (t < 60) {
@@ -155,19 +206,22 @@ export function startTimer() {
           s < 10 ? '0' + s : s
         }`;
       }
-      console.log('t', t);
-      console.log('result', result);
+      elapsedTime = t;
       datatime.textContent = result;
     }, 1000);
   }
 }
+export function getElapsedTime() {
+  return elapsedTime;
+}
 export function stopTimer() {
   clearInterval(intId);
+
   intId = null;
 }
-
 function clearTimer() {
   datatime.textContent = '00:00:00';
+  elapsedTime = 0;
 }
 /* set sizes */
 window.addEventListener('resize', setSizes);
@@ -185,5 +239,4 @@ function setSizes() {
     playGroundWidth = 600;
   }
   btnSize = Math.floor(playGroundWidth / playGroundSize);
-  console.log(btnSize);
 }
