@@ -36,6 +36,7 @@ html {
 }
 
 body {
+  width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -132,23 +133,6 @@ main {
   box-shadow: 2px 2px 3px $c_mid, 0px 0px 3px $c_mid;
 
   display: grid;
-  @media (max-width: 1200px) {
-    width: 500px;
-    height: 500px;
-  }
-  @media (max-width: 700px) {
-    width: 400px;
-    height: 400px;
-  }
-
-  @media (max-width: 400px) {
-    width: 260px;
-    height: 260px;
-  }
-  @media (max-width: 300px) {
-    min-width: 200px;
-    min-height: 200px;
-  }
 }
 [data-size='3x3'] {
   grid-template-columns: 1fr 1fr 1fr;
@@ -174,6 +158,33 @@ main {
   width: 800px;
   height: 800px;
 }
+
+[data-size='3x3'],
+[data-size='4x4'],
+[data-size='5x5'] {
+  @media (max-width: 1200px) {
+    width: 500px;
+    height: 500px;
+  }
+  @media (max-width: 700px) {
+    width: 400px;
+    height: 400px;
+    .q-btn {
+      font-size: 30px;
+      padding: 4%;
+    }
+  }
+
+  @media (max-width: 400px) {
+    width: 280px;
+    height: 280px;
+  }
+  @media (max-width: 300px) {
+    width: 240px;
+    height: 240px;
+  }
+}
+
 [data-size='6x6'],
 [data-size='7x7'],
 [data-size='8x8'] {
@@ -182,26 +193,27 @@ main {
     height: 600px;
   }
   @media (max-width: 700px) {
+    width: 570px;
+    height: 570px;
+    .q-btn {
+      font-size: 30px;
+      padding: 4%;
+    }
+  }
+  @media (max-width: 600px) {
     width: 500px;
     height: 500px;
+  }
+  @media (max-width: 550px) {
+    width: 400px;
+    height: 400px;
     .q-btn {
-      font-size: 3rem;
+      font-size: 20px;
     }
   }
-
-  @media (max-width: 500px) {
-    width: 350px;
-    height: 350px;
-    .q-btn {
-      font-size: 2.6rem;
-    }
-  }
-  @media (max-width: 300px) {
-    min-width: 280px;
-    min-height: 280px;
-    .q-btn {
-      font-size: 2rem;
-    }
+  @media (max-width: 440px) {
+    width: 300px;
+    height: 300px;
   }
 }
 
@@ -210,7 +222,7 @@ main {
   margin: 1px;
   transition: 0.3s;
   color: white;
-  font-size: 4rem;
+  font-size: 40px;
   padding: 5%;
   text-align: center;
   display: flex;
@@ -283,6 +295,14 @@ main {
   justify-content: center;
   align-items: center;
 }
+.mode-wrap {
+  /* flex-wrap: wrap; */
+  @media (max-width: 500px) {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    justify-items: center;
+  }
+}
 
 .moreBtns-container {
   margin-top: 20px;
@@ -340,7 +360,7 @@ main {
   width: fit-content;
   height: fit-content;
   padding: 7%;
-  margin-top: 18%;
+  margin-top: 120px;
   border: 1rem solid white;
   box-shadow: inset 0 0 1.5rem white;
   display: flex;

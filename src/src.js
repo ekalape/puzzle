@@ -23,6 +23,7 @@ const clickscounter = document.createElement('span');
 const wrapper = document.createElement('div');
 const startGameContainer = document.createElement('div');
 const mixBtn = document.createElement('button');
+const easyMixBtn = document.createElement('button');
 const loadGameBtn = document.createElement('button');
 
 const modeContainer = document.createElement('div');
@@ -45,7 +46,7 @@ startGameContainer.classList.add('mode-container', 'moreBtns-container');
 mixBtn.classList.add('controlBtns', 'quad', 'mix');
 loadGameBtn.classList.add('controlBtns', 'quad', 'savedGame');
 
-modeContainer.className = 'mode-container';
+modeContainer.classList.add('mode-container', 'mode-wrap');
 modeContainer__title.classList.add('header-text', 'modeContainer__title');
 threeMode.classList.add(
   'controlBtns',
