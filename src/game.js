@@ -69,7 +69,7 @@ export default class Game {
           !x.classList.contains('quad-empty') && this.checkForEmptySibling(x)
       );
       let btnForMove = Math.floor(Math.random() * availForMove.length);
-      this.move(availForMove[btnForMove]);
+      this.move(availForMove[btnForMove], false);
     }
   }
   easyMixing() {
@@ -80,7 +80,7 @@ export default class Game {
           !x.classList.contains('quad-empty') && this.checkForEmptySibling(x)
       );
       let btnForMove = Math.floor(Math.random() * availForMove.length);
-      this.move(availForMove[btnForMove]);
+      this.move(availForMove[btnForMove], false);
     }
   }
 
@@ -93,7 +93,7 @@ export default class Game {
     if (hasEmptySibling) {
       this.animAvailable = false;
       this.pgSound.play();
-      this.move(e.target);
+      this.move(e.target, true);
       updateClicks(++this.clicksCounter);
       setTimeout(() => {
         this.animAvailable = true;
@@ -114,8 +114,16 @@ export default class Game {
         ) === 1)
     );
   }
-
-  move(currentBtn) {
+  animationStart(btn, direction) {
+    console.log('with animation', direction);
+    console.log('btn >>> ', btn);
+    if ((direction = 'down')) {
+    }
+    if ((direction = 'up')) {
+    }
+  }
+  animationEnd(btn) {}
+  move(currentBtn, withAnimation) {
     let curCol = +currentBtn.style.gridColumnStart;
     let curRow = +currentBtn.style.gridRowStart;
     let emptyCol = +this.emptyBtn.style.gridColumnStart;
@@ -134,21 +142,33 @@ export default class Game {
     if (curCol === emptyCol && emptyRow - curRow === 1) {
       //  console.log('row >> 1', 'down');
       //down
+      if (withAnimation) {
+        this.animationStart(currentBtn, 'down');
+      }
       currentBtn.style.gridRowStart = emptyRow;
       this.emptyBtn.style.gridRowStart = curRow;
     } else if (curCol === emptyCol && emptyRow - curRow === -1) {
       //console.log('row >> -1', 'up');
       //up
+      if (withAnimation) {
+        this.animationStart(currentBtn, 'up');
+      }
       currentBtn.style.gridRowStart = emptyRow;
       this.emptyBtn.style.gridRowStart = curRow;
     } else if (curRow === emptyRow && emptyCol - curCol === 1) {
       // console.log('Col >> 1', 'right');
       //right
+      if (withAnimation) {
+        this.animationStart(currentBtn, 'right');
+      }
       currentBtn.style.gridColumnStart = emptyCol;
       this.emptyBtn.style.gridColumnStart = curCol;
     } else if (curRow === emptyRow && emptyCol - curCol === -1) {
       // console.log('Col >> -1', 'left');
       //left
+      if (withAnimation) {
+        this.animationStart(currentBtn, 'left');
+      }
       currentBtn.style.gridColumnStart = emptyCol;
       this.emptyBtn.style.gridColumnStart = curCol;
     } else return;
@@ -165,7 +185,7 @@ export default class Game {
           `${b.style.gridRowStart}${b.style.gridColumnStart}`
       )
       .map((x) => x.textContent);
-    console.log(this.winCombo);
+
     if (this.winCombo.join('') === realArr.join('')) {
       this.winSound.play();
       let winMessage = `${this.pgSize}x${

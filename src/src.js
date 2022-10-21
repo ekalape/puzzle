@@ -186,7 +186,6 @@ export function saveResult(dataBlock) {
   let resultsData;
   if (localStorage.getItem('pGameLastResults')) {
     resultsData = localStorage.getItem('pGameLastResults').split(',');
-    console.log(resultsData);
   } else {
     resultsData = [];
   }
@@ -202,7 +201,7 @@ export function showLastResults() {
   if (localStorage.getItem('pGameLastResults')) {
     resultsData = localStorage.getItem('pGameLastResults').split(',');
   } else resultsData = ['Nothing recorded yet', 'Win a game to create records'];
-  console.log(resultsData);
+
   const resultsFrame = createModal({ res: true, results: resultsData });
   resultsFrame.classList.add('active');
   document.body.append(resultsFrame);
