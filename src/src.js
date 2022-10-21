@@ -31,6 +31,9 @@ const modeContainer__title = document.createElement('h4');
 const threeMode = document.createElement('button');
 const fourMode = document.createElement('button');
 const fiveMode = document.createElement('button');
+const sixMode = document.createElement('button');
+const sevenMode = document.createElement('button');
+const eightMode = document.createElement('button');
 
 const moreBtnsCont = document.createElement('div');
 const saveGameBtn = document.createElement('button');
@@ -53,6 +56,9 @@ threeMode.classList.add(
 );
 fourMode.classList.add('controlBtns', 'quad', 'four', 'choose-mode');
 fiveMode.classList.add('controlBtns', 'quad', 'five', 'choose-mode');
+sixMode.classList.add('controlBtns', 'quad', 'six', 'choose-mode');
+sevenMode.classList.add('controlBtns', 'quad', 'seven', 'choose-mode');
+eightMode.classList.add('controlBtns', 'quad', 'eight', 'choose-mode');
 
 moreBtnsCont.classList.add('mode-container', 'moreBtns-container');
 saveGameBtn.classList.add('quad', 'controlBtns', 'save-game');
@@ -69,15 +75,28 @@ mixBtn.title = 'Mix buttons and restart';
 loadGameBtn.textContent = 'Load game';
 loadGameBtn.title = 'Load saved game';
 
-modeContainer__title.textContent = '... or choose game mode';
+modeContainer__title.textContent = 'choose a game mode';
 threeMode.textContent = '3 x 3';
 fourMode.textContent = '4 x 4';
 fiveMode.textContent = '5 x 5';
+sixMode.textContent = '6 x 6';
+sevenMode.textContent = '7 x 7';
+eightMode.textContent = '8 x 8';
 
-[threeMode.title, fourMode.title, fiveMode.title] = [
+[
+  threeMode.title,
+  fourMode.title,
+  fiveMode.title,
+  sixMode.title,
+  sevenMode.title,
+  eightMode.title,
+] = [
   '3x3 game field',
   '4x4 game field',
   '5x5 game field',
+  '6x6 game field',
+  '7x7 game field',
+  '8x8 game field',
 ];
 
 showLastBtn.textContent = 'show last results';
@@ -97,7 +116,14 @@ headerContainer.append(datatime, clickscounter);
 header.append(headerContainer);
 startGameContainer.append(mixBtn, loadGameBtn);
 main.append(wrapper, startGameContainer);
-modeContainer.append(threeMode, fourMode, fiveMode);
+modeContainer.append(
+  threeMode,
+  fourMode,
+  fiveMode,
+  sixMode,
+  sevenMode,
+  eightMode
+);
 main.append(modeContainer__title);
 main.append(modeContainer);
 moreBtnsCont.append(saveGameBtn, showLastBtn);
@@ -118,6 +144,15 @@ modeContainer.addEventListener('click', (e) => {
   }
   if (btn.classList.contains('five')) {
     playGroundSize = 5;
+  }
+  if (btn.classList.contains('six')) {
+    playGroundSize = 6;
+  }
+  if (btn.classList.contains('seven')) {
+    playGroundSize = 7;
+  }
+  if (btn.classList.contains('eight')) {
+    playGroundSize = 8;
   }
   btn.classList.add('active-mode');
   startGameFromBtn();
