@@ -114,15 +114,7 @@ export default class Game {
         ) === 1)
     );
   }
-  animationStart(btn, direction) {
-    console.log('with animation', direction);
-    console.log('btn >>> ', btn);
-    if ((direction = 'down')) {
-    }
-    if ((direction = 'up')) {
-    }
-  }
-  animationEnd(btn) {}
+
   move(currentBtn, withAnimation) {
     let curCol = +currentBtn.style.gridColumnStart;
     let curRow = +currentBtn.style.gridRowStart;
@@ -143,7 +135,15 @@ export default class Game {
       //  console.log('row >> 1', 'down');
       //down
       if (withAnimation) {
-        this.animationStart(currentBtn, 'down');
+        const trans = [
+          { transform: `translateY(${-this.btnSize}px)` },
+          { transform: 'none' },
+        ];
+        const duration = {
+          duration: 200,
+          iteration: 1,
+        };
+        currentBtn.animate(trans, duration);
       }
       currentBtn.style.gridRowStart = emptyRow;
       this.emptyBtn.style.gridRowStart = curRow;
@@ -151,7 +151,15 @@ export default class Game {
       //console.log('row >> -1', 'up');
       //up
       if (withAnimation) {
-        this.animationStart(currentBtn, 'up');
+        const trans = [
+          { transform: `translateY(${this.btnSize}px)` },
+          { transform: 'none' },
+        ];
+        const duration = {
+          duration: 200,
+          iteration: 1,
+        };
+        currentBtn.animate(trans, duration);
       }
       currentBtn.style.gridRowStart = emptyRow;
       this.emptyBtn.style.gridRowStart = curRow;
@@ -159,7 +167,15 @@ export default class Game {
       // console.log('Col >> 1', 'right');
       //right
       if (withAnimation) {
-        this.animationStart(currentBtn, 'right');
+        const trans = [
+          { transform: `translateX(${-this.btnSize}px)` },
+          { transform: 'none' },
+        ];
+        const duration = {
+          duration: 200,
+          iteration: 1,
+        };
+        currentBtn.animate(trans, duration);
       }
       currentBtn.style.gridColumnStart = emptyCol;
       this.emptyBtn.style.gridColumnStart = curCol;
@@ -167,7 +183,15 @@ export default class Game {
       // console.log('Col >> -1', 'left');
       //left
       if (withAnimation) {
-        this.animationStart(currentBtn, 'left');
+        const trans = [
+          { transform: `translateX(${this.btnSize}px)` },
+          { transform: 'none' },
+        ];
+        const duration = {
+          duration: 200,
+          iteration: 1,
+        };
+        currentBtn.animate(trans, duration);
       }
       currentBtn.style.gridColumnStart = emptyCol;
       this.emptyBtn.style.gridColumnStart = curCol;
