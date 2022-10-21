@@ -10,6 +10,7 @@ let btnSize;
 let currentGame;
 let intId;
 let elapsedTime;
+export const btnClickSound = new Audio('./assets/pop-click.wav');
 /* page structure */
 /* --- element creations --- */
 const header = document.createElement('header');
@@ -102,10 +103,11 @@ main.append(modeContainer);
 moreBtnsCont.append(saveGameBtn, showLastBtn);
 main.append(moreBtnsCont);
 
-mixBtn.addEventListener('click', startBrandNewGame);
+mixBtn.addEventListener('click', startGameFromBtn);
 
 modeContainer.addEventListener('click', (e) => {
   if (!e.target.classList.contains('quad')) return;
+  btnClickSound.play();
   [...modeContainer.children].forEach((x) => x.classList.remove('active-mode'));
   const btn = e.target;
   if (btn.classList.contains('three')) {
@@ -118,7 +120,7 @@ modeContainer.addEventListener('click', (e) => {
     playGroundSize = 5;
   }
   btn.classList.add('active-mode');
-  startBrandNewGame();
+  startGameFromBtn();
 });
 saveGameBtn.addEventListener('click', saveGame);
 loadGameBtn.addEventListener('click', startSavedGame);
@@ -131,6 +133,7 @@ setSizes();
 startBrandNewGame();
 
 export function startSavedGame() {
+  btnClickSound.play();
   if (localStorage.getItem('pGameInProcess')) {
     clearTimer();
     stopTimer();
@@ -160,6 +163,11 @@ export function startSavedGame() {
       .classList.add('active-mode');
   }
 }
+function startGameFromBtn() {
+  btnClickSound.play();
+  startBrandNewGame();
+}
+
 export function startBrandNewGame() {
   clearTimer();
   stopTimer();
@@ -174,6 +182,7 @@ export function startBrandNewGame() {
 }
 
 export function saveResult(dataBlock) {
+  btnClickSound.play();
   let resultsData;
   if (localStorage.getItem('pGameLastResults')) {
     resultsData = localStorage.getItem('pGameLastResults').split(',');
@@ -188,6 +197,7 @@ export function saveResult(dataBlock) {
   localStorage.setItem('pGameLastResults', resultsData);
 }
 export function showLastResults() {
+  btnClickSound.play();
   let resultsData;
   if (localStorage.getItem('pGameLastResults')) {
     resultsData = localStorage.getItem('pGameLastResults').split(',');
@@ -198,8 +208,8 @@ export function showLastResults() {
   document.body.append(resultsFrame);
 }
 export function saveGame() {
-  //localStorage.removeItem('pGameInProcess');
-  console.log(currentGame);
+  btnClickSound.play();
+
   const game = {
     pgSize: currentGame.pgSize,
     btnsArrangement: currentGame.btnsArrangement,

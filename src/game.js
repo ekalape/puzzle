@@ -9,6 +9,8 @@ export default class Game {
   btnsArrangement;
   winCombo;
   isComplete;
+  pgSound;
+  winSound;
 
   constructor(wrapper, pgSize, clicks) {
     this.wrapper = wrapper;
@@ -20,6 +22,8 @@ export default class Game {
     this.clicksCounter = clicks || 0;
     this.emptyBtn = '';
     this.animAvailable = true;
+    this.pgSound = new Audio('./assets/pop.wav');
+    this.winSound = new Audio('./assets/gameOver.wav');
   }
 
   createPg() {
@@ -88,9 +92,8 @@ export default class Game {
 
     if (hasEmptySibling) {
       this.animAvailable = false;
-
+      this.pgSound.play();
       this.move(e.target);
-
       updateClicks(++this.clicksCounter);
       setTimeout(() => {
         this.animAvailable = true;
@@ -164,6 +167,7 @@ export default class Game {
       .map((x) => x.textContent);
     console.log(this.winCombo);
     if (this.winCombo.join('') === realArr.join('')) {
+      this.winSound.play();
       let winMessage = `${this.pgSize}x${
         this.pgSize
       } field resolved in ${this.getReadableTime(getElapsedTime())} with ${
