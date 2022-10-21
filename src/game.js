@@ -77,7 +77,7 @@ export default class Game {
   }
   easyMixing() {
     console.log('easyMixing');
-    for (let i = 0; i < 2; i++) {
+    for (let i = 0; i < 3; i++) {
       const availForMove = [...this.wrapper.children].filter(
         (x) =>
           !x.classList.contains('quad-empty') && this.checkForEmptySibling(x)

@@ -10,6 +10,7 @@ let btnSize;
 let currentGame;
 let intId;
 let elapsedTime;
+let easy = false;
 export const btnClickSound = new Audio('./assets/pop-click.wav');
 /* page structure */
 /* --- element creations --- */
@@ -23,11 +24,15 @@ const clickscounter = document.createElement('span');
 const wrapper = document.createElement('div');
 const startGameContainer = document.createElement('div');
 const mixBtn = document.createElement('button');
-const easyMixBtn = document.createElement('button');
+
 const loadGameBtn = document.createElement('button');
 
 const modeContainer = document.createElement('div');
+const easyOrHardContainer = document.createElement('div');
 const modeContainer__title = document.createElement('h4');
+
+const easyMode = document.createElement('button');
+const hardMode = document.createElement('button');
 
 const threeMode = document.createElement('button');
 const fourMode = document.createElement('button');
@@ -43,11 +48,23 @@ const showLastBtn = document.createElement('button');
 /* --- element classlist --- */
 headerContainer.className = 'header-container';
 startGameContainer.classList.add('mode-container', 'moreBtns-container');
-mixBtn.classList.add('controlBtns', 'quad', 'mix');
+mixBtn.classList.add('controlBtns', 'quad', 'mixbtn');
+
 loadGameBtn.classList.add('controlBtns', 'quad', 'savedGame');
 
 modeContainer.classList.add('mode-container', 'mode-wrap');
+easyOrHardContainer.classList.add('mode-container');
 modeContainer__title.classList.add('header-text', 'modeContainer__title');
+
+easyMode.classList.add('controlBtns', 'quad', 'easyMode', 'choose-mode');
+hardMode.classList.add(
+  'controlBtns',
+  'quad',
+  'hardMode',
+  'choose-mode',
+  'active-mode'
+);
+
 threeMode.classList.add(
   'controlBtns',
   'quad',
@@ -73,10 +90,17 @@ wrapper.className = 'wrapper';
 /* --- element content --- */
 mixBtn.textContent = 'Start new game';
 mixBtn.title = 'Mix buttons and restart';
+
 loadGameBtn.textContent = 'Load game';
 loadGameBtn.title = 'Load saved game';
 
 modeContainer__title.textContent = 'choose a game mode';
+
+easyMode.textContent = 'Easy mode';
+easyMode.title = 'Choose this mode to resolve the puzzle fastly';
+hardMode.textContent = 'Hard mode';
+hardMode.title = 'Choose this mode to play seriously';
+
 threeMode.textContent = '3 x 3';
 fourMode.textContent = '4 x 4';
 fiveMode.textContent = '5 x 5';
@@ -109,7 +133,7 @@ clickscounter.textContent = '---';
 datatime.title = 'Elapsed time';
 clickscounter.title = 'Game moves done';
 
-wrapper.dataset.size = '3x3';
+wrapper.dataset.size = `${playGroundSize}x${playGroundSize}`;
 
 /* --- element append --- */
 document.body.append(header, main);
@@ -126,7 +150,9 @@ modeContainer.append(
   eightMode
 );
 main.append(modeContainer__title);
-main.append(modeContainer);
+easyOrHardContainer.append(easyMode, hardMode);
+main.append(easyOrHardContainer, modeContainer);
+
 moreBtnsCont.append(saveGameBtn, showLastBtn);
 main.append(moreBtnsCont);
 
@@ -158,6 +184,10 @@ modeContainer.addEventListener('click', (e) => {
   btn.classList.add('active-mode');
   startGameFromBtn();
 });
+
+easyMode.addEventListener('click', changeEasyHardMode);
+hardMode.addEventListener('click', changeEasyHardMode);
+
 saveGameBtn.addEventListener('click', saveGame);
 loadGameBtn.addEventListener('click', startSavedGame);
 
@@ -204,6 +234,7 @@ export function startSavedGame() {
 }
 function startGameFromBtn() {
   btnClickSound.play();
+
   startBrandNewGame();
 }
 
@@ -216,7 +247,8 @@ export function startBrandNewGame() {
   wrapper.innerHTML = '';
   currentGame = new Game(wrapper, playGroundSize);
   currentGame.createPg();
-  currentGame.easyMixing();
+  if (easy) currentGame.easyMixing();
+  else currentGame.mixBtns();
   startTimer();
 }
 
@@ -305,6 +337,24 @@ function clearTimer() {
   datatime.textContent = '00:00:00';
   elapsedTime = 0;
 }
+
+function changeEasyHardMode(e) {
+  [...easyOrHardContainer.children].forEach((x) =>
+    x.classList.remove('active-mode')
+  );
+  if (e.target.classList.contains('easyMode')) {
+    easy = true;
+  }
+  if (e.target.classList.contains('hardMode')) {
+    easy = false;
+  }
+  mixBtn.classList.add('takeAttention');
+  e.target.classList.add('active-mode');
+  setTimeout(() => {
+    mixBtn.classList.remove('takeAttention');
+  }, 600);
+}
+
 /* set sizes */
 window.addEventListener('resize', setSizes);
 
