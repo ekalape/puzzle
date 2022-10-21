@@ -172,6 +172,9 @@ main {
   position: relative;
   /*   position: absolute; */
 }
+.dragging {
+  cursor: grabbing !important;
+}
 .quad {
   background: $c_mid;
   border-bottom: 3px solid $c_dark;
@@ -181,6 +184,7 @@ main {
   box-shadow: 1px 1px 5px $c_dark;
   transition: 0.3s;
   cursor: pointer;
+
   &:hover {
     background: $c_dark-alternative;
   }

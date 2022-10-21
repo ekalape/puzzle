@@ -127,6 +127,9 @@ loadGameBtn.addEventListener('click', startSavedGame);
 
 showLastBtn.addEventListener('click', showLastResults);
 wrapper.addEventListener('click', (e) => currentGame.action(e));
+
+wrapper.addEventListener('dragstart', (e) => currentGame.dragStartHandler(e));
+
 setSizes();
 /* --------------------------- */
 

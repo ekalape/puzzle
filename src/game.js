@@ -11,6 +11,8 @@ export default class Game {
   isComplete;
   pgSound;
   winSound;
+  dropSound;
+  clickedBtn;
 
   constructor(wrapper, pgSize, clicks) {
     this.wrapper = wrapper;
@@ -24,6 +26,7 @@ export default class Game {
     this.animAvailable = true;
     this.pgSound = new Audio('./assets/pop.wav');
     this.winSound = new Audio('./assets/gameOver.wav');
+    this.dropSound = new Audio('./assets/drop.wav');
   }
 
   createPg() {
@@ -92,6 +95,7 @@ export default class Game {
 
     if (hasEmptySibling) {
       this.animAvailable = false;
+
       this.pgSound.play();
       this.move(e.target, true);
       updateClicks(++this.clicksCounter);
@@ -113,6 +117,25 @@ export default class Game {
           +currentB.style.gridColumnStart - +this.emptyBtn.style.gridColumnStart
         ) === 1)
     );
+  }
+  dragStartHandler(e) {
+    //  e.dataTransfer.dropEffect = 'copy';
+    this.clickedBtn = e.target;
+    //  e.target.classList.add('dragging');
+  }
+  dragOverHandler(e) {
+    e.preventDefault();
+    // e.target.classList.add('dragging');
+    e.dataTransfer.dropEffect = 'copy';
+  }
+  dragDropHandler(e) {
+    e.preventDefault();
+    this.dropSound.play();
+    /*   this.clickedBtn.classList.remove('dragging');
+    e.target.classList.remove('dragging'); */
+    this.move(this.clickedBtn, false);
+    updateClicks(++this.clicksCounter);
+    this.checkForWin();
   }
 
   move(currentBtn, withAnimation) {
@@ -254,11 +277,14 @@ export default class Game {
       btn.classList.add('quad');
       btn.textContent = b.num;
       btn.dataset.index = b.num;
+      btn.draggable = true;
     } else {
       btn.classList.add('quad-empty');
       btn.dataset.index = 0;
       btn.textContent = '';
       this.emptyBtn = btn;
+      btn.addEventListener('dragover', (e) => this.dragOverHandler(e));
+      btn.addEventListener('drop', (e) => this.dragDropHandler(e));
     }
     return btn;
   }
