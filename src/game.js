@@ -1,6 +1,6 @@
 import pBtn from './pBtn';
 import createModal from './modals';
-import { updateClicks, updateTimer, stopTimer } from './src.js';
+import { updateClicks, stopTimer, saveResult, getElapsedTime } from './src.js';
 
 export default class Game {
   emptyBtn;
@@ -49,12 +49,10 @@ export default class Game {
   }
 
   arrangeExistedGame(dataBlock) {
-    console.log(dataBlock);
     this.isComplete = false;
     this.wrapper.innerHTML = '';
     this.btnsArrangement = dataBlock;
     dataBlock.forEach((x) => {
-      console.log(typeof x);
       const btn = this.drawBtn(x, !x.isEmpty);
       this.wrapper.append(btn);
     });
@@ -124,8 +122,7 @@ export default class Game {
       (x) => x.num === +currentBtn.textContent
     )[0];
     let iEmpty = this.btnsArrangement.filter((x) => x.num === 0)[0];
-    console.log(iB);
-    console.log(iEmpty);
+
     iB.startCol = emptyCol;
     iB.startRow = emptyRow;
     iEmpty.startCol = curCol;
@@ -165,10 +162,18 @@ export default class Game {
           `${b.style.gridRowStart}${b.style.gridColumnStart}`
       )
       .map((x) => x.textContent);
+    console.log(this.winCombo);
     if (this.winCombo.join('') === realArr.join('')) {
+      let winMessage = `${this.pgSize}x${
+        this.pgSize
+      } field resolved in ${this.getReadableTime(getElapsedTime())} with ${
+        this.clicksCounter
+      } moves`;
+      saveResult(winMessage);
       const winFrame = createModal({
         win: true,
         clicks: this.clicksCounter,
+        message: winMessage,
       });
       winFrame.classList.add('active');
       document.body.append(winFrame);
@@ -179,6 +184,15 @@ export default class Game {
     } else {
       return;
     }
+  }
+
+  getReadableTime(time) {
+    let t = time + ' sec';
+    if (time >= 3600) {
+      t = `${Math.floor(time / 3600)} hours and ${time % 3600} min `;
+    }
+    if (time >= 60) t = `${Math.floor(time / 60)} min and ${time % 60} sec`;
+    return t;
   }
 
   drawBtn(b, isNotEmpty) {

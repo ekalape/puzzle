@@ -60,7 +60,7 @@ module.exports = ({ develop }) => ({
   plugins: [
     new HtmlWebpackPlugin({
       title: 'Puzzle Game',
-      favicon: './src/assets/favicon.ico',
+      favicon: './src/assets/question_icon.png',
     }),
     new CleanWebpackPlugin(),
     /*  new CopyPlugin({

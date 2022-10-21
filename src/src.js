@@ -2,7 +2,7 @@ import './style.scss';
 import pBtn from './pBtn.js';
 import { emptyBtn } from './pBtn.js';
 import Game from './game.js';
-import { whatToDoNextBtns } from './modals.js';
+import createModal from './modals.js';
 
 let playGroundSize = 3;
 let playGroundWidth;
@@ -105,6 +105,7 @@ main.append(moreBtnsCont);
 mixBtn.addEventListener('click', startBrandNewGame);
 
 modeContainer.addEventListener('click', (e) => {
+  if (!e.target.classList.contains('quad')) return;
   [...modeContainer.children].forEach((x) => x.classList.remove('active-mode'));
   const btn = e.target;
   if (btn.classList.contains('three')) {
@@ -141,11 +142,22 @@ export function startSavedGame() {
     wrapper.dataset.size = `${playGroundSize}x${playGroundSize}`;
     wrapper.innerHTML = '';
     currentGame = new Game(wrapper, savedGame.pgSize, savedGame.clicks);
+    currentGame.winCombo = savedGame.winCombo;
     currentGame.arrangeExistedGame(savedGame.btnsArrangement);
+
     clickscounter.textContent = savedGame.clicks;
     datatime.textContent = savedGame.timer;
     startTimer(savedGame.seconds);
-    console.log(currentGame);
+
+    [...modeContainer.children].forEach((x) =>
+      x.classList.remove('active-mode')
+    );
+    [...modeContainer.children]
+      .filter(
+        (x) =>
+          x.textContent.includes(playGroundSize) && x.classList.contains('quad')
+      )[0]
+      .classList.add('active-mode');
   }
 }
 export function startBrandNewGame() {
@@ -162,9 +174,29 @@ export function startBrandNewGame() {
 }
 
 export function saveResult(dataBlock) {
-  localStorage.setItem('pGameLastResults', dataBlock);
+  let resultsData;
+  if (localStorage.getItem('pGameLastResults')) {
+    resultsData = localStorage.getItem('pGameLastResults').split(',');
+    console.log(resultsData);
+  } else {
+    resultsData = [];
+  }
+  if (resultsData.length > 10) {
+    resultsData.pop();
+  }
+  resultsData.unshift(dataBlock);
+  localStorage.setItem('pGameLastResults', resultsData);
 }
-export function showLastResults() {}
+export function showLastResults() {
+  let resultsData;
+  if (localStorage.getItem('pGameLastResults')) {
+    resultsData = localStorage.getItem('pGameLastResults').split(',');
+  } else resultsData = ['Nothing recorded yet', 'Win a game to create records'];
+  console.log(resultsData);
+  const resultsFrame = createModal({ res: true, results: resultsData });
+  resultsFrame.classList.add('active');
+  document.body.append(resultsFrame);
+}
 export function saveGame() {
   //localStorage.removeItem('pGameInProcess');
   console.log(currentGame);
@@ -174,7 +206,9 @@ export function saveGame() {
     clicks: currentGame.clicksCounter,
     timer: datatime.textContent,
     seconds: getElapsedTime(),
+    winCombo: currentGame.winCombo,
   };
+
   localStorage.setItem('pGameInProcess', JSON.stringify(game));
 }
 

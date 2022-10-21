@@ -1,19 +1,23 @@
+@import url('https://fonts.googleapis.com/css2?family=Signika:wght@300;400;500&display=swap');
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 $c_mid: rgb(124, 124, 241);
-//$c_mid: #7c7cf1;
 $c_dark: rgb(60, 60, 165);
 $c_dark-alternative: rgb(80, 80, 202);
 $c_darker: rgb(31, 31, 110);
 $c_light: rgb(158, 175, 250);
 $c_light_transparent: rgba(158, 175, 250, 0.4);
 
+$f_light_weight: 300;
+$f_mid_weight: 400;
+$f_heavy_weight: 500;
 html {
   scroll-behavior: smooth;
   font-size: 15px;
+  font-family: 'Signika', sans-serif;
   @media (max-width: 1000px) {
     font-size: 12px;
   }
@@ -60,7 +64,7 @@ header {
 .header-container {
   width: 100%;
   height: 88%;
-  margin: 0.5% 18%;
+  margin: 1.5% 18%;
 
   position: relative;
   bottom: 0;
@@ -72,22 +76,29 @@ header {
 
   @media (max-width: 500px) {
     height: 90%;
-    margin: 1% 23%;
+    margin: 3% 23%;
   }
 }
 .datatime,
 .clicks-counter {
   cursor: default;
 }
+
 .header-text {
-  font-size: 2rem;
+  font-size: 2.2rem;
   color: $c_dark;
   text-transform: uppercase;
   @media (max-width: 1000px) {
     font-size: 3rem;
   }
+  @media (max-width: 700px) {
+    font-size: 3.3rem;
+  }
   @media (max-width: 500px) {
     font-size: 3.5rem;
+  }
+  @media (max-width: 400px) {
+    font-size: 4.3rem;
   }
 }
 .modeContainer__title {
@@ -101,6 +112,9 @@ main {
   align-items: center;
   flex-direction: column;
   margin-top: 120px;
+  @media (max-width: 500px) {
+    margin-top: 100px;
+  }
 }
 
 .wrapper {
@@ -262,6 +276,7 @@ main {
   height: 100vh;
   display: none;
   justify-content: center;
+
   backdrop-filter: blur(6px);
   //align-items: center;
   background: $c_light_transparent;
@@ -270,28 +285,32 @@ main {
   left: 0;
 }
 .mainFrame {
-  width: 70%;
-  height: 30vh;
-  padding: 5%;
-  margin-top: 25%;
+  width: fit-content;
+  height: fit-content;
+  padding: 7%;
+  margin-top: 18%;
   border: 1rem solid white;
   box-shadow: inset 0 0 1.5rem white;
   display: flex;
   justify-content: center;
   align-items: center;
+
   @media (max-width: 1200px) {
     width: 80%;
   }
   @media (max-width: 700px) {
+    margin-top: 25%;
     width: 90%;
   }
 
   @media (max-width: 400px) {
+    margin-top: 30%;
     width: 96%;
   }
 }
 .win-container {
-  width: 100%;
+  width: 600px;
+  height: fit-content;
   padding: 5%;
   color: $c_dark;
   border-radius: 1rem;
@@ -302,13 +321,71 @@ main {
   align-items: center;
   justify-content: center;
   gap: 1.5rem;
-  .win-container__congrats {
-    font-size: 3rem;
-    border-bottom: 2px solid $c_mid;
+  @media (max-width: 800px) {
+    width: 500px;
+    padding: 10%;
   }
-  .win-container__explanation {
-    font-size: 2rem;
+  @media (max-width: 600px) {
+    width: 400px;
   }
+  @media (max-width: 400px) {
+    width: 300px;
+  }
+}
+.win-container__congrats {
+  font-size: 3rem;
+  border-bottom: 2px solid $c_mid;
+}
+.win-container__explanation {
+  font-size: 2rem;
+}
+.modal-container {
+  font-size: 22px;
+  position: relative;
+  gap: 0;
+  padding-top: 0;
+}
+.close-btn {
+  position: relative;
+  background: url('./assets/close_icon.png');
+  background-size: cover;
+  background-position: center;
+  border-radius: 3px;
+  width: 40px;
+  height: 40px;
+  top: 10px;
+  right: -50%;
+  border: 4px solid white;
+  outline: 4px solid $c_mid;
+  &:hover {
+    background-size: 120%;
+  }
+  &:active {
+    background-size: 80%;
+  }
+
+  @media (max-width: 800px) {
+    width: 35px;
+    height: 35px;
+    top: 10px;
+    right: -55%;
+  }
+  @media (max-width: 600px) {
+    top: 7px;
+    right: -54%;
+  }
+  @media (max-width: 450px) {
+    right: -52%;
+  }
+  @media (max-width: 350px) {
+    width: 30px;
+    height: 30px;
+    right: -52%;
+  }
+}
+.result-title {
+  font-size: 2.5rem;
+  margin: auto;
 }
 .active {
   display: flex;
@@ -319,6 +396,46 @@ main {
   display: flex;
   justify-content: space-evenly;
   align-items: center;
+}
+.results-container {
+  padding: 20px 10px;
+  margin-bottom: 20px;
+  margin-left: 10%;
+
+  & li {
+    list-style-type: none;
+    position: relative;
+
+    margin-top: 10px;
+    @media (max-width: 500px) {
+      font-size: 16px;
+    }
+    @media (max-width: 340px) {
+      font-size: 12px;
+    }
+
+    &::before {
+      content: '';
+      background: url('./assets/exclamation_icon.png');
+      background-position: center;
+      background-size: cover;
+      width: 30px;
+      height: 30px;
+
+      position: absolute;
+      left: -40px;
+      @media (max-width: 500px) {
+        width: 20px;
+        height: 20px;
+        left: -26px;
+      }
+      @media (max-width: 340px) {
+        width: 15px;
+        height: 15px;
+        left: -22px;
+      }
+    }
+  }
 }
 
 .toDoBtn {
