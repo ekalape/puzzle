@@ -13,6 +13,12 @@ export default function createModal(options) {
     frame = winModal(options.clicks, options.message);
   } else if (options.res === true) {
     frame = resultsModal(options.results);
+  } else if (options.restore === true) {
+    frame = restoreModal();
+    setTimeout(() => {
+      bg.classList.remove('active');
+      bg.remove();
+    }, 2000);
   } else {
     frame = document.createElement('p');
     frame.className = 'header-text';
@@ -39,6 +45,20 @@ export default function createModal(options) {
 
   return bg;
 }
+function restoreModal() {
+  const main = document.createElement('div');
+  main.classList.add('win-container');
+  const infoText = document.createElement('h3');
+  infoText.className = 'restore__infotext';
+  infoText.textContent =
+    'Your last game was not completed, it has been restored.';
+  const explanation = document.createElement('h5');
+  explanation.className = 'restore__explanation';
+  explanation.textContent = "If you don't desire to continue, start new game";
+  main.append(infoText, explanation);
+  return main;
+}
+
 function resultsModal(data) {
   const main = document.createElement('div');
   main.classList.add('win-container', 'modal-container');

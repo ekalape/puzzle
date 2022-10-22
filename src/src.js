@@ -4,14 +4,14 @@ import { emptyBtn } from './pBtn.js';
 import Game from './game.js';
 import createModal from './modals.js';
 
-let playGroundSize = 4;
+let playGroundSize;
 let playGroundWidth;
 let btnSize;
 let currentGame;
 let intId;
 let elapsedTime;
-let easy = false;
-export let soundOn = true;
+let easy;
+export let soundOn;
 export const btnClickSound = new Audio('./assets/pop-click.wav');
 /* page structure */
 /* --- element creations --- */
@@ -67,13 +67,7 @@ hardMode.classList.add(
   'active-mode'
 );
 
-threeMode.classList.add(
-  'controlBtns',
-  'quad',
-  'three',
-  'choose-mode',
-  'active-mode'
-);
+threeMode.classList.add('controlBtns', 'quad', 'three', 'choose-mode');
 fourMode.classList.add('controlBtns', 'quad', 'four', 'choose-mode');
 fiveMode.classList.add('controlBtns', 'quad', 'five', 'choose-mode');
 sixMode.classList.add('controlBtns', 'quad', 'six', 'choose-mode');
@@ -131,7 +125,7 @@ showLastBtn.textContent = 'show last results';
 saveGameBtn.textContent = 'save current game';
 
 datatime.textContent = '00:00:00';
-clickscounter.textContent = '---';
+clickscounter.textContent = '0';
 
 datatime.title = 'Elapsed time';
 clickscounter.title = 'Game moves done';
@@ -193,8 +187,14 @@ modeContainer.addEventListener('click', (e) => {
 easyMode.addEventListener('click', changeEasyHardMode);
 hardMode.addEventListener('click', changeEasyHardMode);
 
-saveGameBtn.addEventListener('click', saveGame);
-loadGameBtn.addEventListener('click', startSavedGame);
+saveGameBtn.addEventListener('click', () => {
+  if (soundOn) btnClickSound.play();
+  saveGame(false);
+});
+loadGameBtn.addEventListener('click', () => {
+  if (soundOn) btnClickSound.play();
+  startSavedGame(false);
+});
 
 showLastBtn.addEventListener('click', showLastResults);
 wrapper.addEventListener('click', (e) => currentGame.action(e));
@@ -204,11 +204,44 @@ wrapper.addEventListener('dragstart', (e) => currentGame.dragStartHandler(e));
 setSizes();
 /* --------------------------- */
 
-startBrandNewGame();
+//startBrandNewGame();
+window.addEventListener('DOMContentLoaded', winLoad);
+//window.addEventListener('beforeunload', savePreferences);
+//window.addEventListener('beforeunload', alert(`game > ${currentGame.pgSise}`));
+window.addEventListener('beforeunload', savePreferences);
 
-export function startSavedGame() {
-  if (soundOn) btnClickSound.play();
+function winLoad() {
+  if (localStorage.getItem('pGameSavedPrefers')) {
+    useSavedPrefs();
+  } else {
+    easy = false;
+    playGroundSize = 4;
+    soundOn = true;
+  }
+  if (!soundOn) soundSwitchBtn.classList.add('no-sound');
+  else soundSwitchBtn.classList.remove('no-sound');
+  [...modeContainer.children].forEach((x) => x.classList.remove('active-mode'));
+  [...modeContainer.children]
+    .filter((x) => x.textContent.includes(playGroundSize))[0]
+    .classList.add('active-mode');
+
+  [...easyOrHardContainer.children].forEach((x) =>
+    x.classList.remove('active-mode')
+  );
+  if (easy) easyMode.classList.add('active-mode');
+  else hardMode.classList.add('active-mode');
   if (localStorage.getItem('pGameInProcess')) {
+    startSavedGame(true);
+  } else {
+    startBrandNewGame();
+  }
+}
+
+export function startSavedGame(current) {
+  if (current) {
+    const restoreInfo = createModal({ restore: true });
+    restoreInfo.classList.add('active');
+    document.body.append(restoreInfo);
     clearTimer();
     stopTimer();
     clickscounter.textContent = 0;
@@ -235,6 +268,36 @@ export function startSavedGame() {
           x.textContent.includes(playGroundSize) && x.classList.contains('quad')
       )[0]
       .classList.add('active-mode');
+  } else {
+    if (localStorage.getItem('pGameToSaveAlone')) {
+      clearTimer();
+      stopTimer();
+      clickscounter.textContent = 0;
+      console.log('starting game!');
+
+      const savedGame = JSON.parse(localStorage.getItem('pGameToSaveAlone'));
+      playGroundSize = savedGame.pgSize;
+      wrapper.dataset.size = `${playGroundSize}x${playGroundSize}`;
+      wrapper.innerHTML = '';
+      currentGame = new Game(wrapper, savedGame.pgSize, savedGame.clicks);
+      currentGame.winCombo = savedGame.winCombo;
+      currentGame.arrangeExistedGame(savedGame.btnsArrangement);
+
+      clickscounter.textContent = savedGame.clicks;
+      datatime.textContent = savedGame.timer;
+      startTimer(savedGame.seconds);
+
+      [...modeContainer.children].forEach((x) =>
+        x.classList.remove('active-mode')
+      );
+      [...modeContainer.children]
+        .filter(
+          (x) =>
+            x.textContent.includes(playGroundSize) &&
+            x.classList.contains('quad')
+        )[0]
+        .classList.add('active-mode');
+    }
   }
 }
 function startGameFromBtn() {
@@ -282,7 +345,10 @@ export function showLastResults() {
   resultsFrame.classList.add('active');
   document.body.append(resultsFrame);
 }
-export function saveGame() {
+
+/* ...............save game */
+
+export function saveGame(current) {
   if (soundOn) btnClickSound.play();
 
   const game = {
@@ -293,8 +359,15 @@ export function saveGame() {
     seconds: getElapsedTime(),
     winCombo: currentGame.winCombo,
   };
-
-  localStorage.setItem('pGameInProcess', JSON.stringify(game));
+  if (current) {
+    if (currentGame.isComplete) {
+      localStorage.removeItem('pGameInProcess');
+    } else {
+      localStorage.setItem('pGameInProcess', JSON.stringify(game));
+    }
+  } else {
+    localStorage.setItem('pGameToSaveAlone', JSON.stringify(game));
+  }
 }
 
 export function updateClicks(text) {
@@ -354,6 +427,7 @@ function clearTimer() {
 }
 
 function changeEasyHardMode(e) {
+  if (soundOn) btnClickSound.play();
   [...easyOrHardContainer.children].forEach((x) =>
     x.classList.remove('active-mode')
   );
@@ -363,28 +437,28 @@ function changeEasyHardMode(e) {
   if (e.target.classList.contains('hardMode')) {
     easy = false;
   }
-  mixBtn.classList.add('takeAttention');
   e.target.classList.add('active-mode');
+  startBrandNewGame();
+  /*  mixBtn.classList.add('takeAttention');
   setTimeout(() => {
     mixBtn.classList.remove('takeAttention');
-  }, 600);
+  }, 600); */
 }
 
-/* window.addEventListener('beforeunload ', savePreferences);
-window.addEventListener("load", useSavedPrefs)
+function savePreferences() {
+  const prefs = { mode: easy, pgSise: playGroundSize, sound: soundOn };
+  saveGame(true);
 
-function savePreferences(){
-  const prefs= {mode:easy, pgSise:playGroundSize, sound:soundOn}
-  localStorage.setItem("pGameSavedPrefers", JSON.stringify(prefs))
+  localStorage.setItem('pGameSavedPrefers', JSON.stringify(prefs));
 }
-function useSavedPrefs(){
-  if(localStorage.getItem("pGameSavedPrefers")){
-    const prefs = JSON.parse(localStorage.getItem("pGameSavedPrefers"))
-    easy = prefs.mode;
-    playGroundSize=prefs.pgSise;
-    soundOn = prefs.sound
-  }
-} */
+function useSavedPrefs() {
+  console.log('window loaded');
+
+  const prefs = JSON.parse(localStorage.getItem('pGameSavedPrefers'));
+  easy = prefs.mode;
+  playGroundSize = prefs.pgSise;
+  soundOn = prefs.sound;
+}
 
 /* set sizes */
 window.addEventListener('resize', setSizes);
