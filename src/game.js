@@ -1,6 +1,12 @@
 import pBtn from './pBtn';
 import createModal from './modals';
-import { updateClicks, stopTimer, saveResult, getElapsedTime } from './src.js';
+import {
+  updateClicks,
+  stopTimer,
+  saveResult,
+  getElapsedTime,
+  soundOn,
+} from './src.js';
 
 export default class Game {
   emptyBtn;
@@ -95,8 +101,7 @@ export default class Game {
 
     if (hasEmptySibling) {
       this.animAvailable = false;
-
-      this.pgSound.play();
+      if (soundOn) this.pgSound.play();
       this.move(e.target, true);
       updateClicks(++this.clicksCounter);
       setTimeout(() => {
@@ -130,7 +135,7 @@ export default class Game {
   }
   dragDropHandler(e) {
     e.preventDefault();
-    this.dropSound.play();
+    if (soundOn) this.dropSound.play();
     /*   this.clickedBtn.classList.remove('dragging');
     e.target.classList.remove('dragging'); */
     this.move(this.clickedBtn, false);
@@ -234,7 +239,7 @@ export default class Game {
       .map((x) => x.textContent);
 
     if (this.winCombo.join('') === realArr.join('')) {
-      this.winSound.play();
+      if (soundOn) this.winSound.play();
       let winMessage = `${this.pgSize}x${
         this.pgSize
       } field resolved in ${this.getReadableTime(getElapsedTime())} with ${

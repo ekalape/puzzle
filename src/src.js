@@ -4,13 +4,14 @@ import { emptyBtn } from './pBtn.js';
 import Game from './game.js';
 import createModal from './modals.js';
 
-let playGroundSize = 3;
+let playGroundSize = 4;
 let playGroundWidth;
 let btnSize;
 let currentGame;
 let intId;
 let elapsedTime;
 let easy = false;
+export let soundOn = true;
 export const btnClickSound = new Audio('./assets/pop-click.wav');
 /* page structure */
 /* --- element creations --- */
@@ -20,6 +21,7 @@ const headerContainer = document.createElement('div');
 
 const datatime = document.createElement('span');
 const clickscounter = document.createElement('span');
+const soundSwitchBtn = document.createElement('div');
 
 const wrapper = document.createElement('div');
 const startGameContainer = document.createElement('div');
@@ -84,6 +86,7 @@ showLastBtn.classList.add('quad', 'controlBtns', 'show-last');
 
 datatime.classList.add('datatime', 'header-text');
 clickscounter.classList.add('clicks-counter', 'header-text');
+soundSwitchBtn.classList.add('sound-switcher');
 
 wrapper.className = 'wrapper';
 
@@ -132,12 +135,13 @@ clickscounter.textContent = '---';
 
 datatime.title = 'Elapsed time';
 clickscounter.title = 'Game moves done';
+soundSwitchBtn.title = 'Sound on/off';
 
 wrapper.dataset.size = `${playGroundSize}x${playGroundSize}`;
 
 /* --- element append --- */
 document.body.append(header, main);
-headerContainer.append(datatime, clickscounter);
+headerContainer.append(datatime, clickscounter, soundSwitchBtn);
 header.append(headerContainer);
 startGameContainer.append(mixBtn, loadGameBtn);
 main.append(wrapper, startGameContainer);
@@ -157,10 +161,11 @@ moreBtnsCont.append(saveGameBtn, showLastBtn);
 main.append(moreBtnsCont);
 
 mixBtn.addEventListener('click', startGameFromBtn);
+soundSwitchBtn.addEventListener('click', toggleSound);
 
 modeContainer.addEventListener('click', (e) => {
   if (!e.target.classList.contains('quad')) return;
-  btnClickSound.play();
+  if (soundOn) btnClickSound.play();
   [...modeContainer.children].forEach((x) => x.classList.remove('active-mode'));
   const btn = e.target;
   if (btn.classList.contains('three')) {
@@ -202,7 +207,7 @@ setSizes();
 startBrandNewGame();
 
 export function startSavedGame() {
-  btnClickSound.play();
+  if (soundOn) btnClickSound.play();
   if (localStorage.getItem('pGameInProcess')) {
     clearTimer();
     stopTimer();
@@ -233,7 +238,7 @@ export function startSavedGame() {
   }
 }
 function startGameFromBtn() {
-  btnClickSound.play();
+  if (soundOn) btnClickSound.play();
 
   startBrandNewGame();
 }
@@ -267,7 +272,7 @@ export function saveResult(dataBlock) {
   localStorage.setItem('pGameLastResults', resultsData);
 }
 export function showLastResults() {
-  btnClickSound.play();
+  if (soundOn) btnClickSound.play();
   let resultsData;
   if (localStorage.getItem('pGameLastResults')) {
     resultsData = localStorage.getItem('pGameLastResults').split(',');
@@ -278,7 +283,7 @@ export function showLastResults() {
   document.body.append(resultsFrame);
 }
 export function saveGame() {
-  btnClickSound.play();
+  if (soundOn) btnClickSound.play();
 
   const game = {
     pgSize: currentGame.pgSize,
@@ -294,6 +299,16 @@ export function saveGame() {
 
 export function updateClicks(text) {
   clickscounter.textContent = text;
+}
+/* sound */
+function toggleSound() {
+  if (soundOn) {
+    soundSwitchBtn.classList.add('no-sound');
+    soundOn = false;
+  } else {
+    soundSwitchBtn.classList.remove('no-sound');
+    soundOn = true;
+  }
 }
 
 /* datatimer */
@@ -354,6 +369,22 @@ function changeEasyHardMode(e) {
     mixBtn.classList.remove('takeAttention');
   }, 600);
 }
+
+/* window.addEventListener('beforeunload ', savePreferences);
+window.addEventListener("load", useSavedPrefs)
+
+function savePreferences(){
+  const prefs= {mode:easy, pgSise:playGroundSize, sound:soundOn}
+  localStorage.setItem("pGameSavedPrefers", JSON.stringify(prefs))
+}
+function useSavedPrefs(){
+  if(localStorage.getItem("pGameSavedPrefers")){
+    const prefs = JSON.parse(localStorage.getItem("pGameSavedPrefers"))
+    easy = prefs.mode;
+    playGroundSize=prefs.pgSise;
+    soundOn = prefs.sound
+  }
+} */
 
 /* set sizes */
 window.addEventListener('resize', setSizes);

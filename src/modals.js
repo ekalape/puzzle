@@ -1,4 +1,4 @@
-import { startBrandNewGame, btnClickSound } from './src';
+import { startBrandNewGame, btnClickSound, soundOn } from './src';
 
 export default function createModal(options) {
   const bg = document.createElement('div');
@@ -21,7 +21,7 @@ export default function createModal(options) {
   mainFrame.append(frame);
   frame.addEventListener('click', (e) => {
     if (e.target.textContent.includes('again')) {
-      btnClickSound.play();
+      if (soundOn) btnClickSound.play();
       startBrandNewGame();
       setTimeout(() => {
         bg.classList.remove('active');
@@ -29,7 +29,7 @@ export default function createModal(options) {
       }, 100);
     }
     if (e.target.textContent.includes('care')) {
-      btnClickSound.play();
+      if (soundOn) btnClickSound.play();
       setTimeout(() => {
         bg.classList.remove('active');
         bg.remove();

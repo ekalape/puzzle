@@ -3,6 +3,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  // border: 1px solid red;
 }
 $c_mid: rgb(124, 124, 241);
 $c_dark: rgb(60, 60, 165);
@@ -74,15 +75,72 @@ header {
   justify-content: center;
   gap: 20%;
   align-items: center;
+  @media (max-width: 600px) {
+    gap: 10%;
+    margin: auto;
+  }
 
   @media (max-width: 500px) {
+    gap: 8%;
     height: 90%;
-    margin: 3% 23%;
+    margin: auto;
   }
 }
 .datatime,
 .clicks-counter {
+  position: relative;
+  display: block;
+  text-align: center;
+  width: fit-content;
+
   cursor: default;
+
+  &::before {
+    position: absolute;
+    font-size: 10px;
+    // letter-spacing: 6px;
+    top: 34px;
+    left: 35%;
+    @media (max-width: 1000px) {
+      top: 38px;
+    }
+    @media (max-width: 500px) {
+      top: 28px;
+      left: 35%;
+    }
+  }
+}
+.clicks-counter::before {
+  content: 'moves';
+  left: -40%;
+  @media (max-width: 500px) {
+    left: -80%;
+  }
+}
+.datatime::before {
+  content: 'timer';
+}
+
+.sound-switcher {
+  width: 36px;
+  height: 36px;
+  background: url('./assets/soundOn_icon.png');
+  background-position: center;
+  background-size: cover;
+  border-radius: 4px;
+  outline: 3px solid $c_mid;
+  position: relative;
+  z-index: 10;
+  cursor: pointer;
+  @media (max-width: 500px) {
+    width: 30px;
+    height: 30px;
+  }
+}
+.sound-switcher.no-sound {
+  background: url('./assets/soundOff_icon.png');
+  background-position: center;
+  background-size: cover;
 }
 
 .header-text {
@@ -95,11 +153,8 @@ header {
   @media (max-width: 700px) {
     font-size: 3.3rem;
   }
-  @media (max-width: 500px) {
-    font-size: 3.5rem;
-  }
   @media (max-width: 400px) {
-    font-size: 4.3rem;
+    font-size: 4rem;
   }
 }
 .modeContainer__title {
