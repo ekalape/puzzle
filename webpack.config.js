@@ -25,8 +25,9 @@ const devServer = (isDev) =>
 ghpages.publish(
   'dist',
   {
-    branch: 'puzzle-game',
+    branch: 'puzzle',
     dest: 'puzzle-game',
+    add: true,
   },
   function (err) {}
 );
@@ -63,11 +64,9 @@ module.exports = ({ develop }) => ({
       favicon: './src/assets/question_icon.png',
     }),
     new CleanWebpackPlugin(),
-    /*  new CopyPlugin({
-      patterns: [
-      
-      ],
-    }), */
+    new CopyPlugin({
+      patterns: [{ from: './src/assets', to: './assets' }],
+    }),
     new MiniCssExtractPlugin({
       filename: '[name].css',
     }),

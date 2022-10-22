@@ -60,6 +60,7 @@ function restoreModal() {
 }
 
 function resultsModal(data) {
+  console.log('data > ', data);
   const main = document.createElement('div');
   main.classList.add('win-container', 'modal-container');
   const closeBtn = document.createElement('div');
@@ -70,17 +71,48 @@ function resultsModal(data) {
     bg.remove();
   });
   main.append(closeBtn);
+
+  const sortBtnContainer = document.createElement('div');
+  sortBtnContainer.classList.add('sortBtn__container');
+  for (let i = 0; i < 6; i++) {
+    const sortBtn = document.createElement('div');
+    sortBtn.classList.add('sort-btn');
+    sortBtn.textContent = `${i + 3}x${i + 3}`;
+    sortBtn.addEventListener('click', (e) => switchRes(e, i + 3));
+    sortBtnContainer.append(sortBtn);
+  }
+  main.append(sortBtnContainer);
+
   const resultsTitle = document.createElement('h3');
   resultsTitle.classList.add('win-container__congrats', 'result-title');
-  resultsTitle.textContent = 'Last games';
   const list = document.createElement('ul');
   list.classList.add('results-container');
-  data.forEach((x) => {
-    const line = document.createElement('li');
-    line.textContent = x;
-    list.append(line);
-  });
+  leaderBoard(4);
+  console.log(sortBtnContainer.children);
+  [...sortBtnContainer.children]
+    .filter((x) => x.textContent.includes('4x4'))[0]
+    .classList.add('sort-btn__active');
+
+  function leaderBoard(num) {
+    list.innerHTML = '';
+    resultsTitle.textContent = `Last games for ${num}x${num} field`;
+    data.forEach((x) => {
+      const line = document.createElement('li');
+      line.textContent = x;
+      list.append(line);
+    });
+  }
+
   main.append(resultsTitle, list);
+
+  function switchRes(e, num) {
+    [...sortBtnContainer.children].forEach((x) =>
+      x.classList.remove('sort-btn__active')
+    );
+    e.target.classList.add('sort-btn__active');
+    leaderBoard(num);
+  }
+
   return main;
 }
 

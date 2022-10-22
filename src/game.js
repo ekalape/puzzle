@@ -245,12 +245,16 @@ export default class Game {
       } field resolved in ${this.getReadableTime(getElapsedTime())} with ${
         this.clicksCounter
       } moves`;
-      saveResult(winMessage);
-      const winFrame = createModal({
+
+      const dataBlock = {
         win: true,
         clicks: this.clicksCounter,
         message: winMessage,
-      });
+        seconds: getElapsedTime(),
+        size: this.pgSize,
+      };
+      const winFrame = createModal(dataBlock);
+      saveResult(dataBlock);
       winFrame.classList.add('active');
       document.body.append(winFrame);
       setTimeout(() => {

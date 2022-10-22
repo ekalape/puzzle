@@ -324,21 +324,21 @@ export function saveResult(dataBlock) {
   btnClickSound.play();
   let resultsData;
   if (localStorage.getItem('pGameLastResults')) {
-    resultsData = localStorage.getItem('pGameLastResults').split(',');
+    let rd = localStorage.getItem('pGameLastResults');
+    resultsData = JSON.parse(rd);
   } else {
     resultsData = [];
   }
-  if (resultsData.length > 10) {
-    resultsData.pop();
-  }
-  resultsData.unshift(dataBlock);
+  resultsData.push(dataBlock);
+
+  resultsData = JSON.stringify(resultsData);
   localStorage.setItem('pGameLastResults', resultsData);
 }
 export function showLastResults() {
   if (soundOn) btnClickSound.play();
   let resultsData;
   if (localStorage.getItem('pGameLastResults')) {
-    resultsData = localStorage.getItem('pGameLastResults').split(',');
+    resultsData = JSON.parse(localStorage.getItem('pGameLastResults'));
   } else resultsData = ['Nothing recorded yet', 'Win a game to create records'];
 
   const resultsFrame = createModal({ res: true, results: resultsData });

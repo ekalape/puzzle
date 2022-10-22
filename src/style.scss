@@ -446,13 +446,15 @@ main {
 .mainFrame {
   width: fit-content;
   height: fit-content;
-  padding: 7%;
+  padding: 10% 6%;
   margin-top: 120px;
   border: 1rem solid white;
   box-shadow: inset 0 0 1.5rem white;
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
+  z-index: 1;
 
   @media (max-width: 1200px) {
     width: 80%;
@@ -480,6 +482,8 @@ main {
   align-items: center;
   justify-content: center;
   gap: 1.5rem;
+  position: relative;
+  z-index: 3;
   @media (max-width: 800px) {
     width: 500px;
     padding: 10%;
@@ -503,6 +507,7 @@ main {
   position: relative;
   gap: 0;
   padding-top: 0;
+  //border: 2px solid $c_dark-alternative;
 }
 .restore__infotext {
   text-align: center;
@@ -519,7 +524,7 @@ main {
   background: url('./assets/close_icon.png');
   background-size: cover;
   background-position: center;
-  border-radius: 3px;
+  border-radius: 4px;
   width: 40px;
   height: 40px;
   top: 10px;
@@ -559,6 +564,43 @@ main {
 }
 .active {
   display: flex;
+}
+
+.sortBtn__container {
+  width: 100%;
+  height: 40px;
+  position: absolute;
+  display: flex;
+  justify-content: space-evenly;
+  top: -16%;
+  align-items: center;
+  cursor: pointer;
+  z-index: 3;
+  @media (max-width: 800px) {
+    top: -12%;
+    height: 30px;
+  }
+  @media (max-width: 500px) {
+    font-size: 16px;
+  }
+}
+.sort-btn {
+  width: calc(100% / 8 - 1px);
+  background: white;
+  border: 4px solid transparent;
+  outline: 4px solid $c_mid;
+  text-align: center;
+  border-radius: 4px;
+  color: $c_mid;
+
+  /*   border: 2px solid $c_dark-alternative; */
+  position: relative;
+}
+.sort-btn__active {
+  transform: scale(1.2);
+  color: $c_dark;
+  outline: none;
+  box-shadow: 0 0 1.5rem white;
 }
 .doNextBtns-container {
   width: 100%;
