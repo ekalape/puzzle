@@ -102,6 +102,7 @@ export default class Game {
     if (hasEmptySibling) {
       this.animAvailable = false;
       if (soundOn) this.pgSound.play();
+      this.clickedBtn = e.target;
       this.move(e.target, true);
       updateClicks(++this.clicksCounter);
       setTimeout(() => {
@@ -124,23 +125,37 @@ export default class Game {
     );
   }
   dragStartHandler(e) {
-    //  e.dataTransfer.dropEffect = 'copy';
     this.clickedBtn = e.target;
-    //  e.target.classList.add('dragging');
+    console.log('----------start drag----------- ');
+    console.log('col > ' + e.target.style.gridColumnStart);
+    console.log('row > ' + e.target.style.gridRowStart);
+    console.log('emptyCol > ' + this.emptyBtn.style.gridColumnStart);
+    console.log('emptyRow > ' + this.emptyBtn.style.gridRowStart);
+    console.log('--------------------------- ');
   }
   dragOverHandler(e) {
     e.preventDefault();
-    // e.target.classList.add('dragging');
-    e.dataTransfer.dropEffect = 'copy';
+
+    e.dataTransfer.dropEffect = 'move';
   }
   dragDropHandler(e) {
     e.preventDefault();
+
     if (soundOn) this.dropSound.play();
-    /*   this.clickedBtn.classList.remove('dragging');
-    e.target.classList.remove('dragging'); */
-    this.move(this.clickedBtn, false);
-    updateClicks(++this.clicksCounter);
-    this.checkForWin();
+
+    console.log('----------grag on drop before move----------- ');
+    console.log(
+      'this.clickedBtn col > ' + this.clickedBtn.style.gridColumnStart
+    );
+    console.log('this.clickedBtn row > ' + this.clickedBtn.style.gridRowStart);
+    console.log('emptyCol > ' + this.emptyBtn.style.gridColumnStart);
+    console.log('emptyRow > ' + this.emptyBtn.style.gridRowStart);
+    console.log('--------------------------- ');
+    if (this.checkForEmptySibling(this.clickedBtn)) {
+      this.move(this.clickedBtn, false);
+      updateClicks(++this.clicksCounter);
+      this.checkForWin();
+    } else return;
   }
 
   move(currentBtn, withAnimation) {
@@ -148,6 +163,8 @@ export default class Game {
     let curRow = +currentBtn.style.gridRowStart;
     let emptyCol = +this.emptyBtn.style.gridColumnStart;
     let emptyRow = +this.emptyBtn.style.gridRowStart;
+    console.log('------------------- before change-------------');
+    console.log(this.btnsArrangement);
 
     let iB = this.btnsArrangement.filter(
       (x) => x.num === +currentBtn.textContent
@@ -224,6 +241,23 @@ export default class Game {
       currentBtn.style.gridColumnStart = emptyCol;
       this.emptyBtn.style.gridColumnStart = curCol;
     } else return;
+
+    console.log('----------move completed----------- ');
+    if (this.clickedBtn) {
+      console.log('clickedBtn col > ' + this.clickedBtn.style.gridColumnStart);
+      console.log('clickedBtn row > ' + this.clickedBtn.style.gridRowStart);
+    }
+
+    console.log('currentBtn col > ' + currentBtn.style.gridColumnStart);
+    console.log('currentBtn row > ' + currentBtn.style.gridRowStart);
+    console.log('emptyCol > ' + this.emptyBtn.style.gridColumnStart);
+    console.log('emptyRow > ' + this.emptyBtn.style.gridRowStart);
+    console.log('--------------------------- ');
+    console.log('------------------- after change-------------');
+    console.log(this.btnsArrangement);
+    console.log('------------------- -------------');
+    console.log('------------------- -------------');
+    console.log('------------------- -------------');
   }
 
   checkForWin() {

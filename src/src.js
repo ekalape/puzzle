@@ -321,7 +321,7 @@ export function startBrandNewGame() {
 }
 
 export function saveResult(dataBlock) {
-  btnClickSound.play();
+  /*  if (soundOn)  btnClickSound.play(); */
   let resultsData;
   if (localStorage.getItem('pGameLastResults')) {
     let rd = localStorage.getItem('pGameLastResults');
