@@ -80,6 +80,7 @@ function resultsModal(data) {
     sortBtn.textContent = `${i + 3}x${i + 3}`;
     sortBtn.addEventListener('click', (e) => {
       if (soundOn) btnClickSound.play();
+
       switchRes(e, i + 3);
     });
     sortBtnContainer.append(sortBtn);
@@ -97,6 +98,8 @@ function resultsModal(data) {
     .classList.add('sort-btn__active');
 
   function leaderBoard(num) {
+    list.classList.add('appear');
+
     list.innerHTML = '';
     resultsTitle.textContent = `Best time score for ${num}x${num} field`;
     const requestedArr = data
@@ -114,6 +117,9 @@ function resultsModal(data) {
         list.append(line);
       });
     }
+    setTimeout(() => {
+      list.classList.remove('appear');
+    }, 200);
   }
 
   main.append(resultsTitle, list);
@@ -123,7 +129,11 @@ function resultsModal(data) {
       x.classList.remove('sort-btn__active')
     );
     e.target.classList.add('sort-btn__active');
-    leaderBoard(num);
+    list.classList.add('disappear');
+    setTimeout(() => {
+      list.classList.remove('disappear');
+      leaderBoard(num);
+    }, 200);
   }
 
   return main;

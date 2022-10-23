@@ -350,7 +350,7 @@ export function showLastResults() {
 /* ...............save game */
 
 export function saveGame(current) {
-  if (soundOn) btnClickSound.play();
+  // if (soundOn) btnClickSound.play();
 
   const game = {
     pgSize: currentGame.pgSize,
