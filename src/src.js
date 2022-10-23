@@ -393,22 +393,12 @@ export function startTimer(n) {
   if (intId == null) {
     intId = setInterval(() => {
       t++;
-      if (t < 60) {
-        result = `00:00:${t < 10 ? '0' + t : t}`;
-      } else if (t >= 60 && t < 3600) {
-        let m = Math.floor(t / 60);
-
-        result = `00:${m < 10 ? '0' + m : m}:${
-          t % 60 < 10 ? '0' + (t % 60) : t % 60
-        }`;
-      } else {
-        let h = Math.floor(t / 3600);
-        let m = Math.floor((t % 3600) / 60);
-        let s = (t % 3600) % 60;
-        result = `${h < 10 ? '0' + h : h}:${m < 10 ? '0' + m : m}:${
-          s < 10 ? '0' + s : s
-        }`;
-      }
+      let h = Math.floor(t / 3600);
+      let m = Math.floor((t % 3600) / 60);
+      let s = (t % 3600) % 60;
+      result = `${h < 10 ? '0' + h : h}:${m < 10 ? '0' + m : m}:${
+        s < 10 ? '0' + s : s
+      }`;
       elapsedTime = t;
       datatime.textContent = result;
     }, 1000);
