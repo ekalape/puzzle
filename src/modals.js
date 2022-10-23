@@ -78,13 +78,16 @@ function resultsModal(data) {
     const sortBtn = document.createElement('div');
     sortBtn.classList.add('sort-btn');
     sortBtn.textContent = `${i + 3}x${i + 3}`;
-    sortBtn.addEventListener('click', (e) => switchRes(e, i + 3));
+    sortBtn.addEventListener('click', (e) => {
+      if (soundOn) btnClickSound.play();
+      switchRes(e, i + 3);
+    });
     sortBtnContainer.append(sortBtn);
   }
   main.append(sortBtnContainer);
 
   const resultsTitle = document.createElement('h3');
-  resultsTitle.classList.add('win-container__congrats', 'result-title');
+  resultsTitle.classList.add('result-title');
   const list = document.createElement('ul');
   list.classList.add('results-container');
   leaderBoard(4);
@@ -95,12 +98,22 @@ function resultsModal(data) {
 
   function leaderBoard(num) {
     list.innerHTML = '';
-    resultsTitle.textContent = `Last games for ${num}x${num} field`;
-    data.forEach((x) => {
+    resultsTitle.textContent = `Best time score for ${num}x${num} field`;
+    const requestedArr = data
+      .filter((x) => x.size == num)
+      .sort((a, b) => a.seconds - b.seconds);
+    console.log(requestedArr);
+    if (requestedArr.length === 0) {
       const line = document.createElement('li');
-      line.textContent = x;
+      line.textContent = 'Win a game for the records!';
       list.append(line);
-    });
+    } else {
+      requestedArr.forEach((x) => {
+        const line = document.createElement('li');
+        line.textContent = x.message;
+        list.append(line);
+      });
+    }
   }
 
   main.append(resultsTitle, list);

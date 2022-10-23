@@ -126,16 +126,9 @@ export default class Game {
   }
   dragStartHandler(e) {
     this.clickedBtn = e.target;
-    console.log('----------start drag----------- ');
-    console.log('col > ' + e.target.style.gridColumnStart);
-    console.log('row > ' + e.target.style.gridRowStart);
-    console.log('emptyCol > ' + this.emptyBtn.style.gridColumnStart);
-    console.log('emptyRow > ' + this.emptyBtn.style.gridRowStart);
-    console.log('--------------------------- ');
   }
   dragOverHandler(e) {
     e.preventDefault();
-
     e.dataTransfer.dropEffect = 'move';
   }
   dragDropHandler(e) {
@@ -143,14 +136,6 @@ export default class Game {
 
     if (soundOn) this.dropSound.play();
 
-    console.log('----------grag on drop before move----------- ');
-    console.log(
-      'this.clickedBtn col > ' + this.clickedBtn.style.gridColumnStart
-    );
-    console.log('this.clickedBtn row > ' + this.clickedBtn.style.gridRowStart);
-    console.log('emptyCol > ' + this.emptyBtn.style.gridColumnStart);
-    console.log('emptyRow > ' + this.emptyBtn.style.gridRowStart);
-    console.log('--------------------------- ');
     if (this.checkForEmptySibling(this.clickedBtn)) {
       this.move(this.clickedBtn, false);
       updateClicks(++this.clicksCounter);
@@ -163,8 +148,6 @@ export default class Game {
     let curRow = +currentBtn.style.gridRowStart;
     let emptyCol = +this.emptyBtn.style.gridColumnStart;
     let emptyRow = +this.emptyBtn.style.gridRowStart;
-    console.log('------------------- before change-------------');
-    console.log(this.btnsArrangement);
 
     let iB = this.btnsArrangement.filter(
       (x) => x.num === +currentBtn.textContent
@@ -241,23 +224,6 @@ export default class Game {
       currentBtn.style.gridColumnStart = emptyCol;
       this.emptyBtn.style.gridColumnStart = curCol;
     } else return;
-
-    console.log('----------move completed----------- ');
-    if (this.clickedBtn) {
-      console.log('clickedBtn col > ' + this.clickedBtn.style.gridColumnStart);
-      console.log('clickedBtn row > ' + this.clickedBtn.style.gridRowStart);
-    }
-
-    console.log('currentBtn col > ' + currentBtn.style.gridColumnStart);
-    console.log('currentBtn row > ' + currentBtn.style.gridRowStart);
-    console.log('emptyCol > ' + this.emptyBtn.style.gridColumnStart);
-    console.log('emptyRow > ' + this.emptyBtn.style.gridRowStart);
-    console.log('--------------------------- ');
-    console.log('------------------- after change-------------');
-    console.log(this.btnsArrangement);
-    console.log('------------------- -------------');
-    console.log('------------------- -------------');
-    console.log('------------------- -------------');
   }
 
   checkForWin() {

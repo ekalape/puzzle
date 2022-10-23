@@ -18,6 +18,7 @@ $f_heavy_weight: 500;
 html {
   scroll-behavior: smooth;
   font-size: 15px;
+
   font-family: 'Signika', sans-serif;
   @media (max-width: 1000px) {
     font-size: 12px;
@@ -449,7 +450,7 @@ main {
   padding: 10% 6%;
   margin-top: 120px;
   border: 1rem solid white;
-  box-shadow: inset 0 0 1.5rem white;
+  box-shadow: inset 0 0 1.8rem white;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -463,10 +464,13 @@ main {
     margin-top: 25%;
     width: 90%;
   }
-
+  @media (max-width: 500px) {
+    padding: 12% 6%;
+  }
   @media (max-width: 400px) {
     margin-top: 30%;
     width: 96%;
+    padding: 13% 6%;
   }
 }
 .win-container {
@@ -499,6 +503,7 @@ main {
   font-size: 3rem;
   border-bottom: 2px solid $c_mid;
 }
+
 .win-container__explanation {
   font-size: 2rem;
 }
@@ -550,17 +555,28 @@ main {
     right: -54%;
   }
   @media (max-width: 450px) {
-    right: -52%;
-  }
-  @media (max-width: 350px) {
     width: 30px;
     height: 30px;
+    right: -52%;
+    top: 12px;
+  }
+  @media (max-width: 350px) {
+    width: 25px;
+    height: 25px;
     right: -52%;
   }
 }
 .result-title {
-  font-size: 2.5rem;
+  font-size: 25px;
+  border-bottom: 2px solid $c_mid;
   margin: auto;
+  @media (max-width: 550px) {
+    font-size: 20px;
+  }
+  @media (max-width: 400px) {
+    font-size: 18px;
+    margin-top: 10px;
+  }
 }
 .active {
   display: flex;
@@ -569,19 +585,41 @@ main {
 .sortBtn__container {
   width: 100%;
   height: 40px;
-  position: absolute;
+  position: relative;
   display: flex;
   justify-content: space-evenly;
-  top: -16%;
+  top: -90px;
   align-items: center;
   cursor: pointer;
   z-index: 3;
+
   @media (max-width: 800px) {
-    top: -12%;
+    top: -80px;
     height: 30px;
   }
+  @media (max-width: 600px) {
+    top: -75px;
+    height: 25px;
+    font-size: 17px;
+    line-height: 18px;
+    width: 110%;
+  }
   @media (max-width: 500px) {
-    font-size: 16px;
+    width: 120%;
+    top: -66px;
+    height: 20px;
+    font-size: 14px;
+    line-height: 16px;
+  }
+  @media (max-width: 400px) {
+    width: 130%;
+    top: -58px;
+    height: 16px;
+    font-size: 12px;
+    line-height: 14px;
+  }
+  @media (max-width: 400px) {
+    top: -55px;
   }
 }
 .sort-btn {
@@ -592,15 +630,17 @@ main {
   text-align: center;
   border-radius: 4px;
   color: $c_mid;
-
-  /*   border: 2px solid $c_dark-alternative; */
   position: relative;
+  transition: 0.3s;
+  &:hover:not(.sort-btn__active) {
+    transform: scale(1.1);
+  }
 }
 .sort-btn__active {
-  transform: scale(1.2);
+  transform: scale(1.25);
   color: $c_dark;
   outline: none;
-  box-shadow: 0 0 1.5rem white;
+  box-shadow: 0 0 1.8rem white;
 }
 .doNextBtns-container {
   width: 100%;

@@ -204,6 +204,8 @@ wrapper.addEventListener('dragstart', (e) => currentGame.dragStartHandler(e));
 setSizes();
 /* --------------------------- */
 
+//showLastResults();
+
 //startBrandNewGame();
 window.addEventListener('DOMContentLoaded', winLoad);
 //window.addEventListener('beforeunload', savePreferences);
@@ -321,7 +323,6 @@ export function startBrandNewGame() {
 }
 
 export function saveResult(dataBlock) {
-  /*  if (soundOn)  btnClickSound.play(); */
   let resultsData;
   if (localStorage.getItem('pGameLastResults')) {
     let rd = localStorage.getItem('pGameLastResults');
@@ -395,9 +396,9 @@ export function startTimer(n) {
       if (t < 60) {
         result = `00:00:${t < 10 ? '0' + t : t}`;
       } else if (t >= 60 && t < 3600) {
-        let h = Math.floor(t / 60);
+        let m = Math.floor(t / 60);
 
-        result = `00:${h < 10 ? '0' + h : h}:${
+        result = `00:${m < 10 ? '0' + m : m}:${
           t % 60 < 10 ? '0' + (t % 60) : t % 60
         }`;
       } else {
