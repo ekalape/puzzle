@@ -120,7 +120,7 @@ function resultsModal(data) {
     const requestedArr = data
       .filter((x) => x.size == num)
       .sort((a, b) => a.seconds - b.seconds);
-
+    if (requestedArr.length > 10) requestedArr.length = 10;
     if (requestedArr.length === 0) {
       const line = document.createElement('li');
       line.textContent = 'Win a game for the records!';
