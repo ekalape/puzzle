@@ -443,8 +443,6 @@ function savePreferences() {
   localStorage.setItem('pGameSavedPrefers', JSON.stringify(prefs));
 }
 function useSavedPrefs() {
-  console.log('window loaded');
-
   const prefs = JSON.parse(localStorage.getItem('pGameSavedPrefers'));
   easy = prefs.mode;
   playGroundSize = prefs.pgSise;

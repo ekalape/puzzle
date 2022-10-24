@@ -60,7 +60,6 @@ function restoreModal() {
 }
 
 function resultsModal(data) {
-  console.log('data > ', data);
   const main = document.createElement('div');
   main.classList.add('win-container', 'modal-container');
   const closeBtn = document.createElement('div');
@@ -92,7 +91,7 @@ function resultsModal(data) {
   const list = document.createElement('ul');
   list.classList.add('results-container');
   leaderBoard(4);
-  console.log(sortBtnContainer.children);
+
   [...sortBtnContainer.children]
     .filter((x) => x.textContent.includes('4x4'))[0]
     .classList.add('sort-btn__active');
@@ -105,7 +104,7 @@ function resultsModal(data) {
     const requestedArr = data
       .filter((x) => x.size == num)
       .sort((a, b) => a.seconds - b.seconds);
-    console.log(requestedArr);
+
     if (requestedArr.length === 0) {
       const line = document.createElement('li');
       line.textContent = 'Win a game for the records!';
