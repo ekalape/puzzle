@@ -301,6 +301,14 @@ export function startSavedGame(current) {
             x.classList.contains('quad')
         )[0]
         .classList.add('active-mode');
+    } else {
+      let message = "You didn't save any game yet";
+      const noSavedInfo = createModal({
+        noSaved: true,
+        noSavedMessage: message,
+      });
+      noSavedInfo.classList.add('active');
+      document.body.append(noSavedInfo);
     }
   }
 }

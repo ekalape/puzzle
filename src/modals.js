@@ -19,6 +19,12 @@ export default function createModal(options) {
       bg.classList.remove('active');
       bg.remove();
     }, 2000);
+  } else if (options.noSaved === true) {
+    frame = moreInfo(options.noSavedMessage);
+    setTimeout(() => {
+      bg.classList.remove('active');
+      bg.remove();
+    }, 2000);
   } else {
     frame = document.createElement('p');
     frame.className = 'header-text';
@@ -45,6 +51,16 @@ export default function createModal(options) {
 
   return bg;
 }
+function moreInfo(message) {
+  const main = document.createElement('div');
+  main.classList.add('win-container');
+  const infoText = document.createElement('h3');
+  infoText.className = 'restore__infotext';
+  infoText.textContent = message;
+  main.append(infoText);
+  return main;
+}
+
 function restoreModal() {
   const main = document.createElement('div');
   main.classList.add('win-container');
