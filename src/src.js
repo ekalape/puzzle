@@ -204,6 +204,12 @@ loadGameBtn.addEventListener('click', () => {
 });
 
 showLastBtn.addEventListener('click', showLastResults);
+
+wrapper.addEventListener('touchstart', (e) => currentGame.onTouch(e));
+wrapper.addEventListener('touchmove', (e) => currentGame.onTouch(e));
+wrapper.addEventListener('touchstart', (e) => currentGame.onTouch(e));
+wrapper.addEventListener('touchcancel', (e) => currentGame.onTouch(e));
+
 wrapper.addEventListener('click', (e) => currentGame.action(e));
 
 wrapper.addEventListener('dragstart', (e) => currentGame.dragStartHandler(e));

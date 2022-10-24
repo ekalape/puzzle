@@ -19,6 +19,10 @@ export default class Game {
   winSound;
   dropSound;
   clickedBtn;
+  startX;
+  startY;
+  touchesX = [];
+  touchesY = [];
 
   constructor(wrapper, pgSize, clicks) {
     this.wrapper = wrapper;
@@ -140,6 +144,37 @@ export default class Game {
       this.checkForWin();
     } else return;
   }
+  onTouch(e) {
+    let btn = e.target;
+
+    if (e.type === 'touchstart') {
+      this.touchesX.length = 0;
+      this.touchesY.length = 0;
+      this.startX = Math.round(e.touches[0].clientX);
+      this.startY = Math.round(e.touches[0].clientY);
+    }
+    if (e.type === 'touchmove') {
+      this.touchesX.push(Math.round(e.touches[0].clientX));
+      this.touchesY.push(Math.round(e.touches[0].clientY));
+    }
+
+    if (
+      (this.startX < this.touchesX[this.touchesX.length - 1] &&
+        Math.abs(this.startY - this.touchesY[this.touchesY.length - 1]) < 10 &&
+        this.emptyBtn.style.gridColumnStart > btn.style.gridColumnStart) ||
+      (this.startX > this.touchesX[this.touchesX.length - 1] &&
+        Math.abs(this.startY - this.touchesY[this.touchesY.length - 1]) < 10 &&
+        this.emptyBtn.style.gridColumnStart < btn.style.gridColumnStart) ||
+      (this.startY < this.touchesY[this.touchesY.length - 1] &&
+        Math.abs(this.startX - this.touchesX[this.touchesX.length - 1]) < 10 &&
+        this.emptyBtn.style.gridRowStart > btn.style.gridRowStart) ||
+      (this.startY > this.touchesY[this.touchesY.length - 1] &&
+        Math.abs(this.startX - this.touchesX[this.touchesX.length - 1]) < 10 &&
+        this.emptyBtn.style.gridRowStart < btn.style.gridRowStart)
+    ) {
+      this.action(e);
+    }
+  }
 
   move(currentBtn, withAnimation) {
     let curCol = +currentBtn.style.gridColumnStart;
@@ -238,7 +273,16 @@ export default class Game {
 
     if (this.winCombo.join('') === realArr.join('')) {
       if (soundOn) this.winSound.play();
-      let winMessage = `${this.pgSize}x${
+      let winMessage;
+      if (this.clicksCounter == 1) {
+        winMessage = `${this.pgSize}x${
+          this.pgSize
+        } field resolved in ${this.getReadableTime(getElapsedTime())} with ${
+          this.clicksCounter
+        } move`;
+      }
+
+      winMessage = `${this.pgSize}x${
         this.pgSize
       } field resolved in ${this.getReadableTime(getElapsedTime())} with ${
         this.clicksCounter
