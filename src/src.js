@@ -47,6 +47,8 @@ const moreBtnsCont = document.createElement('div');
 const saveGameBtn = document.createElement('button');
 const showLastBtn = document.createElement('button');
 
+const gameTitle = document.createElement('div');
+
 /* --- element classlist --- */
 headerContainer.className = 'header-container';
 startGameContainer.classList.add('mode-container', 'moreBtns-container');
@@ -83,6 +85,8 @@ clickscounter.classList.add('clicks-counter', 'header-text');
 soundSwitchBtn.classList.add('sound-switcher');
 
 wrapper.className = 'wrapper';
+
+gameTitle.className = 'game-title';
 
 /* --- element content --- */
 mixBtn.textContent = 'Start new game';
@@ -131,12 +135,15 @@ datatime.title = 'Elapsed time';
 clickscounter.title = 'Game moves done';
 soundSwitchBtn.title = 'Sound on/off';
 
+gameTitle.textContent = 'Puzzle game';
+
 wrapper.dataset.size = `${playGroundSize}x${playGroundSize}`;
 
 /* --- element append --- */
 document.body.append(header, main);
-headerContainer.append(datatime, clickscounter, soundSwitchBtn);
+headerContainer.append(clickscounter, datatime, soundSwitchBtn);
 header.append(headerContainer);
+header.append(gameTitle);
 startGameContainer.append(mixBtn, loadGameBtn);
 main.append(wrapper, startGameContainer);
 modeContainer.append(
@@ -204,12 +211,7 @@ wrapper.addEventListener('dragstart', (e) => currentGame.dragStartHandler(e));
 setSizes();
 /* --------------------------- */
 
-//showLastResults();
-
-//startBrandNewGame();
 window.addEventListener('DOMContentLoaded', winLoad);
-//window.addEventListener('beforeunload', savePreferences);
-//window.addEventListener('beforeunload', alert(`game > ${currentGame.pgSise}`));
 window.addEventListener('beforeunload', savePreferences);
 
 function winLoad() {
@@ -350,8 +352,6 @@ export function showLastResults() {
 /* ...............save game */
 
 export function saveGame(current) {
-  // if (soundOn) btnClickSound.play();
-
   const game = {
     pgSize: currentGame.pgSize,
     btnsArrangement: currentGame.btnsArrangement,
@@ -372,7 +372,7 @@ export function saveGame(current) {
 }
 
 export function updateClicks(text) {
-  clickscounter.textContent = text;
+  clickscounter.textContent = '  ' + text;
 }
 /* sound */
 function toggleSound() {

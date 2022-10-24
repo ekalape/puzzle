@@ -4,7 +4,7 @@
   "scripts": {
     "build": "webpack",
     "dev": "webpack serve --env develop",
-    "deploy": "gh-pages -d dist -e puzzle-game --add -m 'feat: upload build'"
+    "deploy": "gh-pages -d dist -e puzzle-game"
   },
   "author": "ekalape",
   "license": "ISC",

@@ -7,9 +7,6 @@ const ghpages = require('gh-pages');
 
 const fs = require('fs');
 
-/* const header = fs.readFileSync(__dirname + '/src/pages/header.html');
-const footer = fs.readFileSync(__dirname + '/src/pages/footer.html'); */
-
 const devServer = (isDev) =>
   !isDev
     ? {}
@@ -27,7 +24,6 @@ ghpages.publish(
   {
     branch: 'puzzle',
     dest: 'puzzle-game',
-    add: true,
   },
   function (err) {}
 );

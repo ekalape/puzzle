@@ -133,10 +133,8 @@ export default class Game {
   }
   dragDropHandler(e) {
     e.preventDefault();
-
-    if (soundOn) this.dropSound.play();
-
     if (this.checkForEmptySibling(this.clickedBtn)) {
+      if (soundOn) this.dropSound.play();
       this.move(this.clickedBtn, false);
       updateClicks(++this.clicksCounter);
       this.checkForWin();
