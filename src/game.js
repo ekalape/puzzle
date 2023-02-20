@@ -82,7 +82,7 @@ export default class Game {
           !x.classList.contains('quad-empty') && this.checkForEmptySibling(x)
       );
       let btnForMove = Math.floor(Math.random() * availForMove.length);
-      this.move(availForMove[btnForMove], false);
+      this.move(availForMove[btnForMove], true);
     }
   }
   easyMixing() {
@@ -93,7 +93,7 @@ export default class Game {
           !x.classList.contains('quad-empty') && this.checkForEmptySibling(x)
       );
       let btnForMove = Math.floor(Math.random() * availForMove.length);
-      this.move(availForMove[btnForMove], false);
+      this.move(availForMove[btnForMove], true);
     }
   }
 
